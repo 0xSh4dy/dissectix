@@ -7,7 +7,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dissectixserver', '0002_alter_challenge_name_alter_dissectixuser_username'),
+        ('authserver', '0002_alter_challenge_name_alter_dissectixuser_username'),
     ]
 
     operations = [
@@ -19,7 +19,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='dissectixuser',
             name='created_challenges',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='chall_author', to='dissectixserver.challenge'),
+            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='chall_author', to='authserver.challenge'),
         ),
         migrations.AlterField(
             model_name='dissectixuser',

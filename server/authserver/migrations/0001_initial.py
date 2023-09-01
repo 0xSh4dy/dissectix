@@ -35,7 +35,7 @@ class Migration(migrations.Migration):
                 ('email', models.EmailField(max_length=254)),
                 ('score', models.IntegerField()),
                 ('attempted_challenges', models.JSONField()),
-                ('created_challenges', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='chall_author', to='dissectixserver.challenge')),
+                ('created_challenges', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='chall_author', to='authserver.challenge')),
             ],
         ),
     ]

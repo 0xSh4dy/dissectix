@@ -33,3 +33,4 @@ media
 *.bak
 .vscode/*
 !.vscode/settings.json 
+.env

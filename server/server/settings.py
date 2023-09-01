@@ -38,7 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     "rest_framework",
-    "dissectixserver"
+    "rest_framework.authtoken",
+    "authserver",
+    "dissectix"
 ]
 
 MIDDLEWARE = [

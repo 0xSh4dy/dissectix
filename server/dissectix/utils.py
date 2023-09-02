@@ -6,6 +6,7 @@ from .disassembler.disassembler import disasm_func
 import string
 import random
 import subprocess
+import uuid
 
 load_dotenv()
 
@@ -82,3 +83,7 @@ def upload_file_to_cloud(file_path,file_name):
     
     except Exception as e:
         return False,"Internal server error"
+    
+
+def generate_unique_id():
+    return str(uuid.uuid4())

@@ -1,0 +1,29 @@
+
+
+.footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    overflow: hidden;
+    background-color: #333; 
+    color: #fff; 
+    text-align: center;
+  }
+  
+  .footer-content {
+    padding: 10px;
+  }
+  
+  
+  .footer-content a {
+    color: #fff;
+    text-decoration: none;
+  }
+  
+  
+  .footer-content a:hover {
+    text-decoration: underline;
+    color: rgb(191, 117, 32);
+  }
+  

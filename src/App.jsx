@@ -1,3 +1,4 @@
+
 import React from 'react';
 import {BrowserRouter,Routes,Route} from "react-router-dom";
 import reactLogo from './assets/react.svg';
@@ -12,7 +13,6 @@ import Footer from './components/Footer/Footer.jsx';
 function App() {
 
   return (
-  
   <BrowserRouter>
   <NavBar />
   
@@ -26,6 +26,7 @@ function App() {
   </BrowserRouter>
  
   );
+
 }
 
 

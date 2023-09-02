@@ -1,0 +1,17 @@
+
+@import url('https://fonts.googleapis.com/css?family=Jura:400');
+
+html {
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+
+body {
+  padding: 0;
+  margin: 0;
+  /* width: 100vw; */
+  font-family: Jura, sans-serif;
+  background-color: aliceblue;
+}
+

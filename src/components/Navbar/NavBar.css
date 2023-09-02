@@ -1,0 +1,22 @@
+.navbar{
+    display: flex;
+    margin: 0;
+    padding: 0;
+    align-items: space-between;
+    border: 0px solid blue;
+    background-color: blanchedalmond;
+    width: auto;
+    overflow: hidden;
+}
+
+.nav-list{
+
+}
+
+.nav-item{
+   list-style: none;
+}
+
+.nav-item a:hover{
+    color: black;
+}

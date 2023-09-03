@@ -1,22 +1,86 @@
 .navbar{
     display: flex;
-    margin: 0;
-    padding: 0;
+    justify-content:space-between;
+    margin: 0px;
+    padding: auto;
     align-items: space-between;
-    border: 0px solid blue;
-    background-color: blanchedalmond;
+    
+    background-color: rgb(128, 127, 126);
     width: auto;
     overflow: hidden;
 }
 
-.nav-list{
+.dissectix{
+    padding: 0px 25px;
+    font-size: 2.1em ;
+    /* text-decoration: underline; */
 
+}
+
+.nav-list{
+  list-style: none;
+  display: grid;
+  grid-gap:20px; 
+  grid-template-columns: repeat(4,auto);
+  align-items: center;
+  text-align:center;
+  justify-content: end;
+  margin-right: 15px;
+  
+  
 }
 
 .nav-item{
-   list-style: none;
+    
+   font-size: 20px;
+   text-decoration: none;
+   
+} 
+.nav-item a{
+   text-decoration: none;
+   color: #000000;
+  transition: color 0.3s ease-in, text-decoration 0.8s;
+  padding: 3px 6px;
+
+}
+.nav-item a:hover{
+    color: rgb(248, 248, 249);
+    text-decoration: underline;
+    background-color: rgb(29, 28, 28);
 }
 
-.nav-item a:hover{
-    color: black;
-}
+.menuButton {
+    display: none; 
+    cursor: pointer;
+    font-size: 24px;
+    margin:18px 10px 18px 10px;
+    padding: 7px;
+  }
+@media (max-width: 768px) {
+    
+    .menuButton {
+      display: block;
+    }
+  
+    .nav-list {
+      display: none;
+      flex-direction: column;
+      position: absolute;
+      top: 50px;
+      right: 0;
+      background-color: rgba(0,1,1,0.9);
+      
+      width: 100%;
+      z-index: 1;
+      padding: 10px 0;
+    }
+  
+    
+    .nav-list.open {
+      display: flex;
+     
+     
+    }
+    
+    
+  }

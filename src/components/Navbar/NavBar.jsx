@@ -1,27 +1,44 @@
-import React from 'react';
-import { Link } from 'react-router-dom'; 
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import './NavBar.css';
+
 function Navbar() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
   return (
-    <div className="navbar">
-      <h1>Dissectix</h1>
-      <ul className="nav-list">
+    <nav className={`navbar ${isMenuOpen ? 'open' : ''}`}>
+      <h1 className="dissectix">Dissectix</h1>
+      <div className="menuButton" onClick={toggleMenu}>
+        <i className={`fas ${isMenuOpen ? 'fa-times' : 'fa-bars'}`}></i>
+      </div>
+      <ul className={`nav-list ${isMenuOpen ? 'open' : ''}`}>
         <li className="nav-item">
-          <Link to="/">Home</Link>
+          <Link to="/" onClick={toggleMenu}>
+            Home
+          </Link>
         </li>
         <li className="nav-item">
-          <Link to="/about">About</Link>
+          <Link to="/about" onClick={toggleMenu}>
+            About
+          </Link>
         </li>
         <li className="nav-item">
-          <Link to="/contact">Dashboard</Link>
+          <Link to="/contact" onClick={toggleMenu}>
+            Dashboard
+          </Link>
         </li>
         <li className="nav-item">
-          <Link to="/LogIn">LogIn</Link>
+          <Link to="/LogIn" onClick={toggleMenu}>
+            LogIn
+          </Link>
         </li>
       </ul>
-    </div>
+    </nav>
   );
 }
 
 export default Navbar;
-

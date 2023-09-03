@@ -5,6 +5,7 @@ import reactLogo from './assets/react.svg';
 import viteLogo from '/vite.svg';
 import './App.css';
 
+import ChallengeForm from './components/ChallengeForm/Index';
 import Login from './components/Auth/Login.jsx';
 import Register from './components/Auth/Register.jsx';
 import ForgotPassword from "./components/Auth/ForgotPassword.jsx";
@@ -20,6 +21,7 @@ function App() {
    <Route path="/" element={<Login/>}/>
    <Route path="/login" element={<Login/>}/>
    <Route path="/register" element={<Register/>}/>
+   <Route path="/createChallenge" element={<ChallengeForm/>}/>
    <Route path="/forgotPassword" element={<ForgotPassword/>}/>
    </Routes>
    <Footer/>

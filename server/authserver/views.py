@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from .serializers import SignupSerializer
-from .utils import getSha256Hash
+from .utils import getSha256Hash,changePassword
 from .models import DissectixUser
 from .serializers import UserSerializer
 from rest_framework import status
@@ -40,5 +40,14 @@ class LoginView(APIView):
         token,created = Token.objects.get_or_create(user=user)
         return Response({"token":token.key,"detail":"Success"},status=status.HTTP_200_OK)
 
-
+class EmailerView(APIView):
+    def post(self,request):
+        email = request.data.email
+        if email==None:
+            return Response({"detail":"Email is required"})
+        else:
+            emailedStatus = changePassword(email)
+            if emailedStatus==False:
+                return Response({"detail","Internal server error"},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response({"detail":"Password reset link has been sent to the provided email"})
     

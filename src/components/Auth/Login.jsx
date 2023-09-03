@@ -1,14 +1,34 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom'; 
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom'; 
 import './Auth.css';
+import { LOGIN_URL } from '../../constants';
+import { httpJsonPost } from '../../utils/httpHandler';
+import { useDispatch } from 'react-redux';
+import { setToken } from '../../slices/tokenSlice';
 
 function LoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
-    console.log('Submitted:', username, password);
+    const data = {
+      "username":username,
+      "password":password
+    }
+    const response = await httpJsonPost(data,LOGIN_URL);
+    if(response.status==404){
+      alert("User not found");
+    }
+    else{
+      let token = response.response.token;
+      let message = response.response.detail;
+      alert(message);
+      dispatch(setToken(token));
+      navigate("/dashboard");
+    }
   };
 
   return (

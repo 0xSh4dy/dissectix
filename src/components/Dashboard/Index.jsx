@@ -3,6 +3,7 @@ import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { selectToken } from "../../slices/tokenSlice";
 import { useNavigate } from "react-router-dom";
+import ChallengeForm from "../ChallengeForm/Index";
 
 export default function Dashboard(){
     const token = useSelector(selectToken);
@@ -13,5 +14,7 @@ export default function Dashboard(){
         }
     },[])
     return <React.Fragment>
+        <ChallengeForm/>
+
     </React.Fragment>
 }

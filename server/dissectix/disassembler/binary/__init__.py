@@ -28,7 +28,6 @@ class Binary:
 
     def disassemble(self, patterns, srcmap=True):
         result = {}
-
         for function in self.functions:
             fname = function.name
             for pattern in patterns:
@@ -46,6 +45,12 @@ class Binary:
                     result[fname] = output
 
         return result
+
+    def get_functions(self):
+        fn_names = []
+        for function in self.functions:
+            fn_names.append(function.name)
+        return fn_names
 
     @property
     def functions(self):

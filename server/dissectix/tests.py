@@ -18,7 +18,7 @@ class ChallengeTest(TestCase):
         self.token = token
 
     def test_rust_challenge_creation(self):
-        chall_url = "http://127.0.0.1:8000/dissectix/create_challenge/"
+        chall_url = "http://127.0.0.1:8000/dissectix/challenge/"
         data = {
             "difficulty":"easy",
             "language":"rust",
@@ -33,34 +33,42 @@ class ChallengeTest(TestCase):
         print(response.status_code)
         print(response.text)
 
-    # def test_c_challenge_creation(self):
-    #     chall_url = "http://127.0.0.1:8000/dissectix/create_challenge/"
-    #     data = {
-    #         "difficulty":"easy",
-    #         "language":"c",
-    #         "code":'#include<stdio.h> \n void test(){puts("Hello world");} int main(){test();return 0;}',
-    #         "name":"simplec",
-    #         "functions":"main|test"
-    #     }
-    #     headers = {
-    #         "Authorization":f"Token {self.token}"
-    #     }
-    #     response = requests.post(chall_url,data=data,headers=headers)
-    #     print(response.status_code)
-    #     print(response.text)
+    def test_c_challenge_creation(self):
+        chall_url = "http://127.0.0.1:8000/dissectix/challenge/"
+        data = {
+            "difficulty":"easy",
+            "language":"c",
+            "code":'#include<stdio.h> \n void test(){puts("Hello world");} int main(){test();return 0;}',
+            "name":"easyCee",
+            "functions":"main|test"
+        }
+        headers = {
+            "Authorization":f"Token {self.token}"
+        }
+        response = requests.post(chall_url,data=data,headers=headers)
+        print(response.status_code)
+        print(response.text)
     
-    # def test_cpp_challenge_creation(self):
-    #     chall_url = "http://127.0.0.1:8000/dissectix/create_challenge/"
-    #     data = {
-    #         "difficulty":"easy",
-    #         "language":"cpp",
-    #         "code":'#include<bits/stdc++.h> \n void test(){std::cout<<"Hello world"<<std::endl;} int main(){test();return 0;}',
-    #         "name":"simplecpp",
-    #         "functions":"main|test"
-    #     }
+    def test_cpp_challenge_creation(self):
+        chall_url = "http://127.0.0.1:8000/dissectix/challenge/"
+        data = {
+            "difficulty":"easy",
+            "language":"cpp",
+            "code":'#include<bits/stdc++.h> \n void test(){std::cout<<"Hello world"<<std::endl;} int main(){test();return 0;}',
+            "name":"niceCpp",
+            "functions":"main|test"
+        }
+        headers = {
+            "Authorization":f"Token {self.token}"
+        }
+        response = requests.post(chall_url,data=data,headers=headers)
+        print(response.status_code)
+        print(response.text)
+    
+    # def test_challenge_deletion(self):
+    #     url = "http://127.0.0.1:8000/dissectix/challenge/"
     #     headers = {
     #         "Authorization":f"Token {self.token}"
     #     }
-    #     response = requests.post(chall_url,data=data,headers=headers)
-    #     print(response.status_code)
+    #     response = requests.delete(url,data={"chall_id":"19589fa0-8d08-4272-98a7-36deb77c81e3"},headers=headers)
     #     print(response.text)

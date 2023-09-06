@@ -4,21 +4,39 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 from .serializers import ChallengeSerializer
-from .utils import upload_file_to_cloud,get_disasm,generate_unique_id
+from .utils import get_disasm,generate_unique_id
+from .cloudstorage import CloudStorage
 from .models import Challenge
 from constants import *
 import base64
 import json
 from loguru import logger
+from django.shortcuts import get_object_or_404
 
 class ChallengeView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        print(request.user.email)
-        return Response({"detail": "works"}, status=200)
-    
+        try:
+            start = request.query_params.get("start")
+            end = request.query_params.get("end")
+            if start==None or end==None:
+                start = 0
+                end = Challenge.objects.count()
+            difficulty = request.query_params.get("difficulty")
+            query_set = Challenge.objects.order_by("chall_id")
+            
+            if difficulty!=None:
+                query_set = query_set.filter(difficulty=difficulty)
+            
+            challenges = query_set[int(start):int(end)]
+            serializer = ChallengeSerializer(challenges,many=True)
+            return Response({"detail": json.dumps(serializer.data)}, status=200)
+        except Exception as e:
+            logger.error(e)
+            return Response({"detail":"Internal server error"},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
     def post(self,request):
         try:
             author = request.user.username
@@ -49,7 +67,10 @@ class ChallengeView(APIView):
             data["code"] = encoded_asm_code
             serializer = ChallengeSerializer(data=data)
             if serializer.is_valid():
-                upload_status,url = upload_file_to_cloud(file_path,file_name)
+                cloud_storage = CloudStorage()
+
+                # The name of the file to be stored in the bucket must be the challenge id
+                upload_status,url = cloud_storage.upload_file_to_cloud(file_path,data["chall_id"])
                 serializer.validated_data["file_url"] = url
                 if upload_status == True:
                     serializer.save()
@@ -62,12 +83,18 @@ class ChallengeView(APIView):
             return Response({"detail":str(e)},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
     def delete(self,request):
-        chall_id = request.data["chall_id"]
         author = request.user.username
-        challenge = Challenge.objects.get(chall_id=chall_id)
-        if challenge.author == author:
-            challenge.delete()
-            return Response({"detail":"Deleted challenge"},status=status.HTTP_200_OK)
-        return Response({"detail":"Deletion failed"},status=status.HTTP_403_FORBIDDEN)
-
-    
+        chall_id = request.data["chall_id"]
+        if chall_id==None:
+            return Response({"detail":"Invalid fields"},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        chall = get_object_or_404(Challenge,chall_id=chall_id)
+        if chall.author == author:
+            chall.delete()
+            cloud_storage = CloudStorage()
+            deletion_status = cloud_storage.delete_file_from_bucket(chall_id)
+            if deletion_status:
+                return Response({"detail":"Challenge deleted"},status=status.HTTP_200_OK)
+            else:
+                return Response({"detail":"Internal server error"},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        else:
+            return Response({"detail":"Unauthorized"},status=status.HTTP_401_UNAUTHORIZED)

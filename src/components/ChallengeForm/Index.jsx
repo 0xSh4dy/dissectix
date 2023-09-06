@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import "./challengeForm.css";
+import styled from "styled-components";
 import {
     Container,
     Typography,
@@ -14,6 +16,7 @@ import {
 } from "@mui/material";
 
 export default function ChallengeForm() {
+    const [tags, setTags] = useState([]);
     const [formData, setFormData] = useState({
         name: "",
         chall_id: "",
@@ -22,7 +25,7 @@ export default function ChallengeForm() {
         file_url: "",
         points: 0,
         difficulty: "easy",
-        language: "",
+        language: "c",
         functions: "",
         code: "",
     });
@@ -40,6 +43,43 @@ export default function ChallengeForm() {
         // You can handle form submission here.
     };
 
+    const removeTag = (tag) => {
+        const newArray = tags.filter((element) => element !== tag);
+        setTags(newArray);
+    }
+
+    const handleFunctionChange = (e)=>{
+        if(e.key==='Enter'){
+            e.preventDefault();
+            if(e.target.value===''){
+                window.alert('Please enter a function: ')
+            }
+            else{
+                if(!tags.includes(e.target.value)){
+                    setTags(prev=>[...prev,e.target.value])
+                }
+            }
+            e.target.value='';
+        }
+    }
+
+    const renderButtons = () => {
+        let counter = 0;
+    
+        return tags.map((tag, index) => {
+          counter++;
+          return (
+            <button
+              key={index}
+              className="rounded-button"
+              onClick={() => removeTag(tag)}
+            >
+              {tag}
+            </button>
+          );
+        });
+      };
+
     return (
         <Container maxWidth="sm">
             <Typography variant="h4" gutterBottom>
@@ -56,7 +96,7 @@ export default function ChallengeForm() {
                             onChange={handleChange}
                         />
                     </Grid>
-                    <Grid item xs={12}>
+                    {/* <Grid item xs={12}>
                         <TextField
                             label="Challenge ID"
                             fullWidth
@@ -64,7 +104,7 @@ export default function ChallengeForm() {
                             value={formData.chall_id}
                             onChange={handleChange}
                         />
-                    </Grid>
+                    </Grid> */}
                     <Grid item xs={12}>
                         <TextField
                             fullWidth
@@ -80,7 +120,28 @@ export default function ChallengeForm() {
                             maxRows={10}
                             multiline
                             placeholder="function1|function2"
+                            onKeyDown={handleFunctionChange}
                         />
+                    </Grid>
+
+                    <div className="used_division">
+      <StyledGrid>{renderButtons()}</StyledGrid>
+    </div>
+                    <Grid item xs={12}>
+                        <FormControl fullWidth>
+                            <InputLabel htmlFor="language">Programming Language</InputLabel>
+                            <Select
+                                name="language"
+                                value={formData.language}
+                                onChange={handleChange}
+                                label="Programming Language"
+                            >
+                                <MenuItem value="c">C</MenuItem>
+                                <MenuItem value="c++">C++</MenuItem>
+                                <MenuItem value="rust">Rust</MenuItem>
+                                <MenuItem value="go">Go</MenuItem>
+                            </Select>
+                        </FormControl>
                     </Grid>
                     <Grid item xs={12}>
                         <FormControl fullWidth>
@@ -107,3 +168,42 @@ export default function ChallengeForm() {
         </Container>
     );
 }
+
+const StyledContainer  = styled(Container)`
+
+`;
+
+
+const Heading  = styled(Typography)`
+    color:white;
+`;
+
+
+const StyledGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* Adjust the number of columns as needed */
+  gap: 10px; /* Adjust the gap between buttons as needed */
+`;
+
+
+const Input = styled(TextField)`
+    /* & label{
+        color: white;
+    }
+    & div{
+        border: 1px solid white;
+        border-radius: 10px;
+    }
+         */
+`;
+
+const DifficultyLabel = styled(InputLabel)`
+    /* color:white; */
+`;
+
+
+const StyledFormControl = styled(FormControl)`
+    & div,svg{
+        /* color: #740f0f; */
+    }
+`

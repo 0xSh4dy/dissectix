@@ -1,0 +1,20 @@
+.rounded-button {
+    border: none;
+    border-radius: 20px; /* Adjust the radius as needed */
+    padding: 10px 20px; /* Adjust padding as needed */
+    background-color: #3498db; /* Change this to your desired button color */
+    color: #fff; /* Text color */
+    font-size: 16px; /* Font size */
+    cursor: pointer;
+}
+.used_division {
+    display: flex;
+    max-height: auto;
+    flex: column;
+    overflow-wrap: break-word;
+    /* flex-wrap: wrap; Allow items to wrap to the next line */
+    padding: 20px;
+    /* ... (other styles) */
+    /* flex-basis: calc(100% - 10px); */
+}
+

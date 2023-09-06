@@ -1,20 +1,96 @@
-import { Box, Button, Grid } from "@mui/material";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { selectToken } from "../../slices/tokenSlice";
 import { useNavigate } from "react-router-dom";
 import ChallengeForm from "../ChallengeForm/Index";
+import { CHALLENGE_URL } from "../../constants";
+import Challenge from "../ChallengeBox/Index";
+import { Box, Button, Grid, Select, Typography } from "@mui/material";
 
-export default function Dashboard(){
-    const token = useSelector(selectToken);
-    const navigate = useNavigate();
-    useEffect(()=>{
-        if(token==""){
-            navigate("/login");
-        }
-    },[])
-    return <React.Fragment>
-        <ChallengeForm/>
+export default function Dashboard() {
+  const token = useSelector(selectToken);
+  const navigate = useNavigate();
 
-    </React.Fragment>
+  const [start, setStart] = useState(0);
+  const [challenges, setChallenges] = useState([]);
+
+  useEffect(() => {
+    if (token === "") {
+      navigate("/login");
+    } else {
+      const challFetchingUrl = CHALLENGE_URL + "?" + new URLSearchParams({
+        start: start,
+        end: start + 20,
+      });
+      fetch(challFetchingUrl, {
+        method: "GET",
+        headers: {
+          Authorization: `Token ${token}`,
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          data = JSON.parse(data.detail);
+          setChallenges(data);
+        })
+        .catch((err) => console.log(err));
+    }
+  }, [start]);
+
+  const nextText = "Next >>";
+  const prevText = "<< Previous";
+
+  return (
+    <div>
+      <Grid
+        container
+        spacing={3}
+        justifyContent="center"
+        alignItems="stretch"
+        marginTop="2px"
+        marginLeft="2px"
+      >
+        {challenges.map((challenge) => (
+          <Challenge key={challenge.id} challenge={challenge} />
+        ))}
+      </Grid>
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        marginTop="2rem"
+      >
+        <Button
+          onClick={() => {
+            if (start - 20 >= 0) {
+              setStart(start - 20);
+            } else {
+              setStart(0);
+            }
+          }}
+          variant="contained"
+          style={{ width: "13%", marginRight: "1rem" }}
+        >
+          {prevText}
+        </Button>
+        <Typography
+          margin="1rem"
+          display="inline"
+          color="textSecondary"
+          variant="h4"
+        >
+          Page {start / 20 + 1}
+        </Typography>
+        <Button
+          onClick={() => {
+            setStart(start + 20);
+          }}
+          variant="contained"
+          style={{ width: "13%", marginLeft: "1rem" }}
+        >
+          {nextText}
+        </Button>
+      </Box>
+    </div>
+  );
 }

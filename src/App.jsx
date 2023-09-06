@@ -14,6 +14,7 @@ import Footer from './components/Footer/Footer.jsx';
 import { Home } from '@mui/icons-material';
 import Logout from "./components/Auth/Logout.jsx";
 import Dashboard from './components/Dashboard/Index';
+import ChallengeInstance from './components/ChallengeInstance/Index';
 function App() {
 
   return (
@@ -27,8 +28,9 @@ function App() {
         <Route path="/forgotPassword" element={<ForgotPassword />} />
         <Route path='/logout' element={<Logout/>}/>
         <Route path='/dashboard' element={<Dashboard/>}/>
+        <Route path='/challenge/:challengeId' element={<ChallengeInstance/>}/>
       </Routes>
-      <Footer />
+      {/* <Footer /> */}
     </BrowserRouter>
 
   );

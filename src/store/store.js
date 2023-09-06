@@ -3,6 +3,7 @@ import persistStore from "redux-persist/es/persistStore";
 import tokenReducer from "../slices/tokenSlice";
 import storage from "redux-persist/lib/storage";
 import persistReducer from "redux-persist/es/persistReducer";
+import challengeReducer from "../slices/challengeSlice";
 
 const persistConfig = {
     key: "root",
@@ -14,7 +15,8 @@ const persistedTokenReducer = persistReducer(persistConfig, tokenReducer);
 const store = configureStore(
     {
         reducer: {
-            token: persistedTokenReducer
+            token: persistedTokenReducer,
+            challenge:challengeReducer,
         },
         middleware: getDefaultMiddleware =>
             getDefaultMiddleware({

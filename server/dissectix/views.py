@@ -10,6 +10,7 @@ from .models import Challenge
 from constants import *
 import base64
 import json
+import os
 from loguru import logger
 from django.shortcuts import get_object_or_404
 
@@ -74,12 +75,14 @@ class ChallengeView(APIView):
                 serializer.validated_data["file_url"] = url
                 if upload_status == True:
                     serializer.save()
+                    os.remove(file_path)
                     return Response({"detail":"Challenge created"},status=status.HTTP_200_OK)
                 else:
                     return Response({"detail":"Internal server error"},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
             else:
                 return Response({"detail":serializer.errors},status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
+            logger.critical(e)
             return Response({"detail":str(e)},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
     def delete(self,request):

@@ -33,7 +33,7 @@ def get_disasm(language,code,name,functions):
     elif language == "rust":
         file_path += ".rs"
     else:
-        return (False,"Sorry, dissectix doesn't support that language")
+        return (False,"Sorry, dissectix doesn't support that language","Error!")
 
     with open(file_path,"w") as f:
         f.write(code)

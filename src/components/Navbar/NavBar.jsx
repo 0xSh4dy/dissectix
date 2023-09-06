@@ -1,57 +1,57 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import './NavBar.css';
 import { selectToken } from '../../slices/tokenSlice';
 import { useSelector } from 'react-redux';
-import { ListItem } from '@mui/material';
+import { AppBar, Toolbar, List, ListItem, Button } from '@mui/material';
 
 function Navbar() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-
   const token = useSelector(selectToken);
 
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
-
-  const loggedInStyle = token==""?{"display":"inline-block"}:{"display":"none"};
-  const loggedOutStyle = token==""?{"display":"none"}:{"display":"inline-block"};
-
   return (
-    <nav className={`navbar ${isMenuOpen ? 'open' : ''}`}>
-      <h1 className="dissectix">Dissectix</h1>
-      <div className="menuButton" onClick={toggleMenu}>
-        <i className={`fas ${isMenuOpen ? 'fa-times' : 'fa-bars'}`}></i>
-      </div>
-      <ul className={`nav-list ${isMenuOpen ? 'open' : ''}`}>
-        <li className="nav-item">
-          <Link to="/" onClick={toggleMenu}>
-            Home
-          </Link>
-        </li>
-        <li className="nav-item">
-          <Link to="/about" onClick={toggleMenu}>
-            About
-          </Link>
-        </li>
-        <li className="nav-item">
-          <Link to="/dashboard" onClick={toggleMenu}>
-            Dashboard
-          </Link>
-        </li>
-
-        <ListItem className='nav-item' sx={loggedInStyle}>
-        <Link to="/LogIn" onClick={toggleMenu}>
-            LogIn
-          </Link>
-        </ListItem>
-        <ListItem className='nav-item' sx={loggedOutStyle}>
-        <Link to="/logout" onClick={toggleMenu}>
+    <AppBar position="static" className="appBar">
+      <Toolbar className="toolbar">
+        <Link to="/" className="logo">
+          Dissectix
+        </Link>
+        <List className="navList">
+          <ListItem className="navItem">
+            <Link to="/" className="navLink">
+              Home
+            </Link>
+          </ListItem>
+          <ListItem className="navItem">
+            <Link to="/about" className="navLink">
+              About
+            </Link>
+          </ListItem>
+          <ListItem className="navItem">
+            <Link to="/dashboard" className="navLink">
+              Dashboard
+            </Link>
+          </ListItem>
+          <ListItem className="navItem" style={{ display: token ? 'none' : 'inline-block' }}>
+            <Link to="/login" className="navLink">
+              Login
+            </Link>
+          </ListItem>
+          <ListItem className="navItem" style={{ display: token ? 'inline-block' : 'none' }}>
+            <Link to="/logout" className="navLink">
+              Logout
+            </Link>
+          </ListItem>
+        </List>
+        {token ? (
+          <Button variant="outlined" className="logoutButton">
             Logout
-          </Link>
-        </ListItem>
-      </ul>
-    </nav>
+          </Button>
+        ) : (
+          <Button variant="outlined" className="loginButton">
+            Login
+          </Button>
+        )}
+      </Toolbar>
+    </AppBar>
   );
 }
 

@@ -1,10 +1,11 @@
 from django.db import models
 
 class Challenge(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=50,unique=True)
     chall_id = models.TextField(unique=True)
     author = models.CharField(max_length=50)
     is_public = models.BooleanField()
+    description = models.TextField(default="")
     file_url = models.TextField(default="")
     solve_percentage = models.JSONField()
     points = models.IntegerField()

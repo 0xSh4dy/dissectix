@@ -28,6 +28,7 @@ export default function ChallengeForm() {
         language: "c",
         functions: "",
         code: "",
+        description:""
     });
 
     const handleChange = (e) => {
@@ -47,6 +48,25 @@ export default function ChallengeForm() {
         const newArray = tags.filter((element) => element !== tag);
         setTags(newArray);
     }
+    const handleWordChange = (e) => {                 // For description
+        const { name, value } = e.target;
+        
+        
+        const wordCount = value.split(/\s+/).filter(Boolean).length;
+
+        if (wordCount <= 200) {
+            setFormData({
+                ...formData,
+                [name]: value,
+            });
+        }
+        
+    };
+    const handleCombinedChange = (e) => {
+        handleChange(e); 
+        handleDescriptionChange(e); // For Challenge Name 
+    };
+
 
     const handleFunctionChange = (e)=>{
         if(e.key==='Enter'){
@@ -93,7 +113,9 @@ export default function ChallengeForm() {
                             fullWidth
                             name="name"
                             value={formData.name}
-                            onChange={handleChange}
+                            onChange={handleCombinedChange}
+                            helperText={`${formData.name.length} / 40 characters`}
+                            inputProps={{ maxLength: 40 }}
                         />
                     </Grid>
                     {/* <Grid item xs={12}>
@@ -157,6 +179,21 @@ export default function ChallengeForm() {
                                 <MenuItem value="hard">Hard</MenuItem>
                             </Select>
                         </FormControl>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <TextField
+                            fullWidth
+                            label="Description"
+                            maxRows={10}
+                            multiline
+                            placeholder="Challenge Description"
+                            name="description"
+                            value={formData.description}
+                            onChange={handleWordChange}
+                            helperText={`${formData.description.length} / 200 characters`}
+                            inputProps={{ maxLength: 200 }}
+                           
+                        />
                     </Grid>
                     <Grid item xs={12}>
                         <Button type="submit" variant="contained" color="primary">

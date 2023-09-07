@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./challengeForm.css";
 import styled from "styled-components";
+
 import {
     Container,
     Typography,
@@ -17,6 +18,10 @@ import {
 
 export default function ChallengeForm() {
     const [tags, setTags] = useState([]);
+
+    const [isFocused, setIsFocused] = useState(false);  // For restriction to display only when user clicks on that field
+
+
     const [formData, setFormData] = useState({
         name: "",
         chall_id: "",
@@ -108,15 +113,23 @@ export default function ChallengeForm() {
             <form onSubmit={handleSubmit}>
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
+                    <div>
                         <TextField
                             label="Challenge Name"
                             fullWidth
                             name="name"
                             value={formData.name}
                             onChange={handleCombinedChange}
-                            helperText={`${formData.name.length} / 40 characters`}
+                            onFocus={() => setIsFocused(true)}
+                            onBlur={() => setIsFocused(false)}
                             inputProps={{ maxLength: 40 }}
                         />
+                        {isFocused && (
+                       <Typography variant="caption">
+                           {formData.name.length} / 40 characters
+                      </Typography>
+                           )}
+                    </div>
                     </Grid>
                     {/* <Grid item xs={12}>
                         <TextField
@@ -181,6 +194,7 @@ export default function ChallengeForm() {
                         </FormControl>
                     </Grid>
                     <Grid item xs={12}>
+                        <div>
                         <TextField
                             fullWidth
                             label="Description"
@@ -190,10 +204,16 @@ export default function ChallengeForm() {
                             name="description"
                             value={formData.description}
                             onChange={handleWordChange}
-                            helperText={`${formData.description.length} / 200 characters`}
+                            onFocus={() => setIsFocused(true)}
+                            onBlur={() => setIsFocused(false)}
                             inputProps={{ maxLength: 200 }}
-                           
                         />
+                        {isFocused && (
+                       <Typography variant="caption">
+                       {formData.description.length} / 200 characters
+                      </Typography>
+                           )}
+                    </div>
                     </Grid>
                     <Grid item xs={12}>
                         <Button type="submit" variant="contained" color="primary">

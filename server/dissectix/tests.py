@@ -24,7 +24,7 @@ class ChallengeTest(TestCase):
             "language":"rust",
             "code":'fn test(){println!("Hello world!");} fn main(){test();}',
             "description":"This hit that ice cold Michelle Pffefier that white gold. Uptown Funk is awesome!",
-            "name":"rusthree",
+            "name":"rustfour",
             "functions":"main|test"
         }
         headers = {
@@ -40,7 +40,7 @@ class ChallengeTest(TestCase):
             "difficulty":"easy",
             "language":"c",
             "code":'#include<stdio.h> \n void test(){puts("Hello world");} int main(){test();return 0;}',
-            "name":"ceethree",
+            "name":"cfour",
             "description":"This hit that ice cold Michelle Pffefier that white gold. Uptown Funk is awesome!",
             "functions":"main|test"
         }
@@ -57,7 +57,7 @@ class ChallengeTest(TestCase):
             "difficulty":"easy",
             "language":"cpp",
             "code":'#include<bits/stdc++.h> \n void test(){std::cout<<"Hello world"<<std::endl;} int main(){test();return 0;}',
-            "name":"cppthree",
+            "name":"cppfour",
             "description":"This hit that ice cold Michelle Pffefier that white gold. Uptown Funk is awesome!",
             "functions":"main|test"
         }

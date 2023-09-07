@@ -4,6 +4,8 @@ import tokenReducer from "../slices/tokenSlice";
 import storage from "redux-persist/lib/storage";
 import persistReducer from "redux-persist/es/persistReducer";
 import challengeReducer from "../slices/challengeSlice";
+import editorThemeReducer from "../slices/editorThemeSlice";
+import functionReducer from "../slices/functionSlice";
 
 const persistConfig = {
     key: "root",
@@ -11,12 +13,15 @@ const persistConfig = {
 }
 
 const persistedTokenReducer = persistReducer(persistConfig, tokenReducer);
+const persistedEditorThemeReducer = persistReducer(persistConfig,editorThemeReducer);
 
 const store = configureStore(
     {
         reducer: {
             token: persistedTokenReducer,
             challenge:challengeReducer,
+            editorTheme:persistedEditorThemeReducer,
+            function:functionReducer
         },
         middleware: getDefaultMiddleware =>
             getDefaultMiddleware({

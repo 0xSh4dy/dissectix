@@ -20,6 +20,12 @@ class ChallengeView(APIView):
 
     def get(self, request):
         try:
+            chall_id = request.query_params.get("chall_id")
+            if chall_id != None:
+                chall_data = get_object_or_404(Challenge,chall_id=chall_id)
+                data = ChallengeSerializer(chall_data)
+                return Response({"detail":data.data},status=status.HTTP_200_OK)
+            
             start = request.query_params.get("start")
             end = request.query_params.get("end")
             if start==None or end==None:
@@ -59,7 +65,7 @@ class ChallengeView(APIView):
             if success==False:
                 return Response({"detail":message},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
             
-            asm_code = str(message)
+            asm_code = json.dumps(message)
             encoded_asm_code = base64.b64encode(asm_code.encode()).decode()
             file_name = file_path.split("/")[-1]
             
@@ -101,3 +107,7 @@ class ChallengeView(APIView):
                 return Response({"detail":"Internal server error"},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         else:
             return Response({"detail":"Unauthorized"},status=status.HTTP_401_UNAUTHORIZED)
+
+class SolutionView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]

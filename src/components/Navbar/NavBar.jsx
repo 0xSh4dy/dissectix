@@ -30,6 +30,21 @@ function Navbar() {
               Dashboard
             </Link>
           </ListItem>
+          <ListItem className="navItem">
+            <Link to="/createChallenge" className='navLink'>
+              Create Challenge
+            </Link>
+          </ListItem>
+          <ListItem className='navItem'>
+            <Link to='/mychallenges' className='navLink'>
+              My Challenges
+            </Link>
+          </ListItem>
+          <ListItem className='navItem'>
+            <Link to='/profile' className='navLink'>
+              Profile
+            </Link>
+          </ListItem>
           <ListItem className="navItem" style={{ display: token ? 'none' : 'inline-block' }}>
             <Link to="/login" className="navLink">
               Login

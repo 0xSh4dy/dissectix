@@ -21,7 +21,8 @@ export default function Challenge(props) {
       "chall_id":challengeData.chall_id,
       "name":challengeData.name,
       "code":challengeData.code,
-      "functions":challengeData.functions
+      "functions":challengeData.functions,
+      "language":challengeData.language
     }))
     navigate(`/challenge/${challengeData.chall_id}`);
   };

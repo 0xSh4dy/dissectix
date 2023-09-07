@@ -7,7 +7,8 @@ export const challengeSlice = createSlice({
             "chall_id":"",
             "code":"",
             "name":"",
-            "functions":""
+            "functions":"",
+            "language":""
         }
     },
     reducers:{

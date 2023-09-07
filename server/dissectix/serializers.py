@@ -5,3 +5,8 @@ class ChallengeSerializer(ModelSerializer):
     class Meta:
         model = Challenge
         fields = "__all__"
+
+class ChallengeCodeSerializer(ModelSerializer):
+    class Meta:
+        model = Challenge
+        fields = ["code","language","functions","name"]

@@ -10,9 +10,11 @@ const AssemblyCode = ({ code }) => {
   }, []);
 
   return (
-    <pre>
+    <React.Fragment >
+    <pre style={{maxHeight:"30vh"}}>
       <code className="language-asm">{code}</code>
     </pre>
+    </React.Fragment>
   );
 };
 

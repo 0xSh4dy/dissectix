@@ -1,7 +1,7 @@
 import { PersonPinSharp } from "@mui/icons-material";
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { selectFunction } from "../../slices/functionSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { selectFunction, setFunction } from "../../slices/functionSlice";
 import { FormControl, InputLabel, NativeSelect } from "@mui/material";
 import AssemblyCode from "./AssemblyCode";
 import { CHALLENGE_URL } from "../../constants";
@@ -25,6 +25,7 @@ export default function AssemblyView() {
     const [functions, setFunctions] = useState([]);
     const [code, setCode] = useState({});
     const [fn, setCurrentFn] = useState("");
+    const dispatch = useDispatch();
 
     useEffect(() => {
         let challFetchingUrl = CHALLENGE_URL + "?";
@@ -48,6 +49,7 @@ export default function AssemblyView() {
             let programData = decodeAsm(requiredData.code);
             setFunctions(programData.functions);
             setCode(programData.data);
+            dispatch(setFunction(programData.functions[0]));
         }).catch((err) => { console.log(err); return; });
 
     }, [])
@@ -58,6 +60,7 @@ export default function AssemblyView() {
                 value={fn}
                 onChange={(e) => {
                     setCurrentFn(e.target.value);
+                    dispatch(setFunction(e.target.value));
                 }}
             >
                 {functions.map((fnName) => (

@@ -5,5 +5,6 @@ const LOGIN_URL = authUrl + "login/";
 const REGISTER_URL = authUrl + "register/";
 
 const CHALLENGE_URL = dissectixUrl + "challenge/";
+const CODE_TESTING_URL = dissectixUrl + "codetesting/"
 
-export {LOGIN_URL,REGISTER_URL,CHALLENGE_URL};
+export {LOGIN_URL,REGISTER_URL,CHALLENGE_URL,CODE_TESTING_URL};

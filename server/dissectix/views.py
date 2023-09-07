@@ -3,7 +3,7 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import ChallengeSerializer
+from .serializers import ChallengeSerializer,ChallengeCodeSerializer
 from .utils import get_disasm,generate_unique_id
 from .cloudstorage import CloudStorage
 from .models import Challenge
@@ -108,6 +108,27 @@ class ChallengeView(APIView):
         else:
             return Response({"detail":"Unauthorized"},status=status.HTTP_401_UNAUTHORIZED)
 
-class SolutionView(APIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
+class CodeTestingView(APIView):
+    def post(self,request):
+        data = request.data
+        try:
+            code = data["code"]
+            language = data["language"]
+            functions = data["functions"]
+            name = data["name"]
+            fn = data["function"]
+            stats,disasm,file_path = get_disasm(language,code,name,functions.split("|"),False)
+            try:
+                os.remove(file_path)
+            except Exception as e:
+                logger.debug(e)
+            if type(disasm)!=str:
+                if fn not in disasm.keys():
+                    return Response({"detail":f"Please write the code for {fn} before testing","error":"true"},status=200)
+            if stats==False:
+                return Response({"detail":disasm,"error":"true"},status=status.HTTP_200_OK)
+            else:
+                return Response({"detail":json.dumps(disasm[fn])},status=status.HTTP_200_OK)
+        except Exception as e:
+            logger.error(e)
+            return Response({"detail":"Error: " +str(e),"error":"true"},status=status.HTTP_200_OK)

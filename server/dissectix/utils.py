@@ -16,9 +16,8 @@ def generate_random_name(l):
     return ''.join(rand_str)
 
 # Function to generate dissassembly of the provided code
-def get_disasm(language,code,name,functions):
-    name = name.replace("_","")
-    random_filename = name +"_"+ generate_random_name(10)
+def get_disasm(language,code,name,functions,auto_name=True):
+    random_filename = name
     file_path = "/tmp/"+random_filename
     original_path = file_path
     logger.info(f"Created file for compilation at {file_path}")
@@ -37,30 +36,31 @@ def get_disasm(language,code,name,functions):
 
     with open(file_path,"w") as f:
         f.write(code)
-    status,error_msg =  compile_code(language,file_path)
+    try:
+        status,error_msg =  compile_code(language,file_path)
+        if status==True:
+                    # Perform name mangling to get the exact mangled function name in Rust, C++ and GO
+            mangled_functions = []
+            for function in functions:
+                mangled_name = get_mangled_function_name(function,original_path,language)
+                mangled_functions.append(mangled_name)
 
-    # Perform name mangling to get the exact mangled function name in Rust, C++ and GO
-    mangled_functions = []
-    for function in functions:
-        mangled_name = get_mangled_function_name(function,original_path,language)
-        mangled_functions.append(mangled_name)
-    logger.debug(mangled_functions)
-
-    if status==True:
-        logger.info("Code compiled successfully")
-        logger.debug(f"Disassembling {original_path}")
-        try:
+            logger.debug(mangled_functions)
+            logger.info("Code compiled successfully")
+            logger.debug(f"Disassembling {original_path}")
             disasm = disasm_func(original_path,language,mangled_functions)
             logger.debug(f"Disassembling  {functions}")
             logger.debug(disasm)
             return (True,disasm,original_path)
-        except Exception as e:
-            logger.error(e)
-            return (False,"Internal server error","")
 
-    else:
-        logger.error(f"Compilation failed: {error_msg}")
-        return (False,error_msg,"")
+        else:
+            logger.error(f"Compilation failed: {error_msg}")
+            return (False,error_msg,"")
+        
+    except Exception as e:
+        logger.critical(e)
+        return (False,e,"")
+
 
 # Run any shell command specified in command_list
 def run_shell_command(command_list):

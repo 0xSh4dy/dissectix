@@ -116,19 +116,22 @@ class CodeTestingView(APIView):
             language = data["language"]
             functions = data["functions"]
             name = data["name"]
-            fn = data["function"]
-            stats,disasm,file_path = get_disasm(language,code,name,functions.split("|"),False)
+            mangledFuncs = data["mangledFunctions"]
+            stats,disasm,file_path = get_disasm(language,code,name,["main","test"])
+
             try:
                 os.remove(file_path)
             except Exception as e:
                 logger.debug(e)
             if type(disasm)!=str:
-                if fn not in disasm.keys():
-                    return Response({"detail":f"Please write the code for {fn} before testing","error":"true"},status=200)
+                keys = disasm.keys()
+                for funcn in mangledFuncs:
+                    if funcn not in keys:
+                        return Response({"detail":f"Please write the code for all the functions before testing","error":"true"},status=200)
             if stats==False:
                 return Response({"detail":disasm,"error":"true"},status=status.HTTP_200_OK)
             else:
-                return Response({"detail":json.dumps(disasm[fn])},status=status.HTTP_200_OK)
+                return Response({"detail":json.dumps(disasm)},status=status.HTTP_200_OK)
         except Exception as e:
             logger.error(e)
             return Response({"detail":"Error: " +str(e),"error":"true"},status=status.HTTP_200_OK)

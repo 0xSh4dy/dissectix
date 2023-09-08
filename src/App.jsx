@@ -15,16 +15,19 @@ import { Home } from '@mui/icons-material';
 import Logout from "./components/Auth/Logout.jsx";
 import Dashboard from './components/Dashboard/Index';
 import ChallengeInstance from './components/ChallengeInstance/Index';
+import { useSelector } from 'react-redux';
+import { selectToken } from './slices/tokenSlice';
 function App() {
 
+  const token = useSelector(selectToken);
   return (
     <BrowserRouter>
       <NavBar />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
+        <Route path="/login" element={token==""?<Login />:<Dashboard/>} />
         <Route path="/register" element={<Register />} />
-        <Route path="/createChallenge" element={<ChallengeForm />} />
+        <Route path="/createChallenge" element={token==""?<Login/>:<ChallengeForm />} />
         <Route path="/forgotPassword" element={<ForgotPassword />} />
         <Route path='/logout' element={<Logout/>}/>
         <Route path='/dashboard' element={<Dashboard/>}/>

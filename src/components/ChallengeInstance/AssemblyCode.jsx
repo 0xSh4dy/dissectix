@@ -1,7 +1,9 @@
 import React, { useEffect } from "react";
 import Prism from "prismjs"; // Import Prism.js
-import "prismjs/themes/prism.css"; // Import the desired Prism.js theme
-import "prismjs/components/prism-asm6502"
+
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { dark } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { darkula } from "react-syntax-highlighter/dist/cjs/styles/hljs";
 
 const AssemblyCode = ({ code }) => {
   useEffect(() => {
@@ -11,9 +13,10 @@ const AssemblyCode = ({ code }) => {
 
   return (
     <React.Fragment >
-    <pre style={{maxHeight:"30vh"}}>
-      <code className="language-asm">{code}</code>
-    </pre>
+      <SyntaxHighlighter language="x86asm" style={dark} >
+        {code}
+      </SyntaxHighlighter>
+
     </React.Fragment>
   );
 };

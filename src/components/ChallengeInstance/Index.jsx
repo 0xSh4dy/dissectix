@@ -1,17 +1,25 @@
 import { useDispatch, useSelector } from "react-redux"
 import { selectChallenge, setChallenge } from "../../slices/challengeSlice";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { CHALLENGE_URL, CODE_TESTING_URL } from "../../constants";
 import { useLocation, useNavigate } from "react-router-dom";
 import { selectToken } from "../../slices/tokenSlice";
 import { Editor } from "@monaco-editor/react";
-import { Button, FormControl, FormControlLabel, FormLabel, Grid, InputLabel, NativeSelect, Radio, RadioGroup, Stack, Typography } from "@mui/material";
-import AssemblyView from "./AssemblyView";
+import { Button, FormControl, FormControlLabel, FormLabel, Grid, Input, InputLabel, NativeSelect, Radio, RadioGroup, Stack, Typography } from "@mui/material";
 import { selectEditorTheme, setEditorTheme } from "../../slices/editorThemeSlice";
 import AssemblyCode from "./AssemblyCode";
 import { selectFunction } from "../../slices/functionSlice";
 import { selectCode, setCurrentCode } from "../../slices/codeSlice";
 
+function getCodeAndFunctions(base64Code) {
+    let decodedCode = JSON.parse(atob(base64Code));
+    let functions = Object.keys(decodedCode);
+    let code = {}
+    for (let fun of functions) {
+        code[fun] = decodedCode[fun];
+    }
+    return {code:code,functions:functions};
+}
 export default function ChallengeInstance() {
     const [language, setLanguage] = useState("");
     const location = useLocation();
@@ -23,7 +31,11 @@ export default function ChallengeInstance() {
     const [challengeId, setChallengeId] = useState("");
     const [functions, setFunctions] = useState([]);
     const [userAsm, setUserAsm] = useState("");
-    const curFnName = useSelector(selectFunction);
+    const [mode, setMode] = useState("original"); // anyone of original, compiled, diffed
+    const [originalCode, setOriginalCode] = useState({});
+    const [currentOriginalFunction,setCurrentOriginalFunction] = useState([]);
+    const [mangledNames, setMangledNames] = useState([]);
+    const [currentCompiledFunction,setCurrentCompiledFunction] = useState([]);
 
     useEffect(() => {
         let challFetchingUrl = CHALLENGE_URL + "?";
@@ -44,7 +56,11 @@ export default function ChallengeInstance() {
         }).then(response => response.json()).then((data) => {
             setLanguage(data.detail.language);
             setChallName(data.detail.name);
-            setFunctions(data.detail.functions);
+            setFunctions(data.detail.functions.split("|"));
+            let returnCode = getCodeAndFunctions(data.detail.code);
+            setOriginalCode(returnCode.code);
+            setMangledNames(returnCode.functions);
+            setCurrentOriginalFunction(returnCode.functions[0]);
         }).catch((err) => { console.log(err); return; });
 
     }, []);
@@ -59,8 +75,8 @@ export default function ChallengeInstance() {
             code: code,
             language: language,
             functions: functions,
-            function: curFnName,
-            name: challName
+            name: challName,
+            mangledFunctions: mangledNames
         }
         const resp = await fetch(url, {
             method: "POST",
@@ -80,29 +96,57 @@ export default function ChallengeInstance() {
             }
             else {
                 let asmCode = JSON.parse(stats.detail);
-                console.log(asmCode)
+                setCurrentCompiledFunction(Object.keys(asmCode)[0]);
                 setUserAsm(asmCode);
             }
         }
     }
+
+
+    function OriginalCodeContainer(){
+        return <React.Fragment>
+            <FormControl>
+                <InputLabel>Functions</InputLabel>
+                <NativeSelect onChange={(e)=>{setCurrentOriginalFunction(e.target.value);}}>
+                    {mangledNames.map(x=><option value={x} key={x}>{x}</option>)}
+                </NativeSelect>
+            </FormControl>
+            {originalCode[currentOriginalFunction]?<AssemblyCode code={originalCode[currentOriginalFunction].asm}/>:null}
+        </React.Fragment>
+    }
+
+    function CompileMeMessage(){
+        return <Typography color="red" marginTop={10} variant="h6">Please compile the code first</Typography>
+    }
+    function CompiledCodeContainer(){
+        return <React.Fragment>
+            <FormControl>
+                <InputLabel>Functions</InputLabel>
+                <NativeSelect onChange={(e)=>setCurrentCompiledFunction(e.target.value)}>
+                    {mangledNames.map(x=><option value={x} key={x}>{x}</option>)}
+                </NativeSelect>
+            </FormControl>
+            {userAsm[currentCompiledFunction]?<AssemblyCode code={userAsm[currentCompiledFunction].asm}/>:<CompileMeMessage/>}
+        </React.Fragment>
+    }
     return <Grid container marginTop="10px" sx={{ position: "relative", bottom: "10px" }}>
         <Grid item xs={2} padding={4}>
-                <Typography variant="h4">{challName}</Typography>
-                <FormControl>
-                    <InputLabel variant="standard">Theme</InputLabel>
-                    <NativeSelect onChange={(e) => { dispatch(setEditorTheme(e.target.value)); }}>
-                        <option value="vs-dark">Dark</option>
-                        <option value="light">Light</option>
-                    </NativeSelect>
-                </FormControl>
-                <Button onClick={checkCode} fullWidth variant="contained" sx={{ marginTop: "1rem" }}>
-                    Test
-                </Button>
-                <Button onClick={() => {
-                    localStorage.setItem(challengeId, code)
-                }} fullWidth variant="contained" sx={{ marginTop: "1rem" }}>
-                    Save
-                </Button>
+            <Typography variant="h4">{challName}</Typography>
+            <FormControl>
+                <InputLabel variant="standard">Theme</InputLabel>
+                <NativeSelect onChange={(e) => { dispatch(setEditorTheme(e.target.value)); }}>
+                    <option value="vs-dark">Dark</option>
+                    <option value="light">Light</option>
+                </NativeSelect>
+            </FormControl>
+            <Button onClick={checkCode} fullWidth variant="contained" sx={{ marginTop: "1rem" }}>
+                Compile
+            </Button>
+            <Button onClick={() => {
+                localStorage.setItem(challengeId, code)
+            }} fullWidth variant="contained" sx={{ marginTop: "1rem" }}>
+                Save
+            </Button>
         </Grid>
         <Grid item xs={5}>
             <Editor
@@ -114,23 +158,21 @@ export default function ChallengeInstance() {
                 onChange={(value) => setCode(value)}
             />
         </Grid>
-        <Grid container xs={5} columnSpacing={2} >
-            <Grid item xs={12}>
-                <AssemblyView />
-            </Grid>
-            <Grid item xs={12}>
+        <Grid item xs={5} columnSpacing={2} >
+            <Grid item xs={12} sx={{ marginLeft: "2px" }}>
                 <div>
                     <FormControl>
-                        <FormLabel>Your Assembly!</FormLabel>
-                        <RadioGroup row >
-                            <FormControlLabel value="original" control={<Radio/>} label="Original"/>
-                            <FormControlLabel  value="compiled" control={<Radio />} label="Compiled"/>
-                            <FormControlLabel  value="diffed" control={<Radio />} label="Diffed"/>
+                        <FormLabel sx={{ textAlign: "center", marginTop: "5px" }}>Your Assembly!</FormLabel>
+                        <RadioGroup defaultValue="original" row onChange={(e) => setMode(e.target.value)} >
+                            <FormControlLabel value="original" control={<Radio />} label="Original" />
+                            <FormControlLabel value="compiled" control={<Radio />} label="Compiled" />
+                            {/* <FormControlLabel  value="diffed" control={<Radio />} label="Diffed"/> */}
                         </RadioGroup>
                     </FormControl>
                 </div>
-                <AssemblyCode code={userAsm.asm} />
+                {mode === "original" ? <OriginalCodeContainer/>: <CompiledCodeContainer/>};
             </Grid>
+
 
         </Grid>
 

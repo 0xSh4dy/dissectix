@@ -15,6 +15,9 @@ import {
   FormControl,
   InputLabel,
 } from "@mui/material";
+import { useSelector } from "react-redux";
+import { selectToken } from "../../slices/tokenSlice";
+import { CHALLENGE_URL } from "../../constants";
 
 const StyledContainer = styled(Container)`
   background-color: #f5f5f5;
@@ -74,12 +77,8 @@ export default function ChallengeForm() {
   const [tags, setTags] = useState([]);
   const [formData, setFormData] = useState({
     name: "",
-    chall_id: "",
-    author: "",
-    is_public: false,
-    file_url: "",
-    points: 0,
     difficulty: "easy",
+    description:"",
     language: "c",
     functions: "",
     code: "",
@@ -93,9 +92,21 @@ export default function ChallengeForm() {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
-    // You can handle form submission here.
+    console.log(formData);
+    const response = await fetch(CHALLENGE_URL,{
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json"
+      }
+    });
+    if(response.status!=200){
+      alert(response.statusText)
+    }
+    else{
+
+    }
   };
 
   const removeTag = (tag) => {
@@ -162,7 +173,7 @@ export default function ChallengeForm() {
               label="Functions"
               maxRows={10}
               multiline
-              placeholder="function1|function2"
+              placeholder="function"
               onKeyDown={handleFunctionChange}
             />
           </Grid>

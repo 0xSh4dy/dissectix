@@ -4,6 +4,7 @@ import './NavBar.css';
 import { selectToken } from '../../slices/tokenSlice';
 import { useSelector } from 'react-redux';
 import { AppBar, Toolbar, List, ListItem, Button } from '@mui/material';
+import LoggedInComponents from './LoggedInComponents';
 
 function Navbar() {
   const token = useSelector(selectToken);
@@ -25,26 +26,8 @@ function Navbar() {
               About
             </Link>
           </ListItem>
-          <ListItem className="navItem">
-            <Link to="/dashboard" className="navLink">
-              Dashboard
-            </Link>
-          </ListItem>
-          <ListItem className="navItem">
-            <Link to="/createChallenge" className='navLink'>
-              Create Challenge
-            </Link>
-          </ListItem>
-          <ListItem className='navItem'>
-            <Link to='/mychallenges' className='navLink'>
-              My Challenges
-            </Link>
-          </ListItem>
-          <ListItem className='navItem'>
-            <Link to='/profile' className='navLink'>
-              Profile
-            </Link>
-          </ListItem>
+        {token?<LoggedInComponents/>:null}
+          
           <ListItem className="navItem" style={{ display: token ? 'none' : 'inline-block' }}>
             <Link to="/login" className="navLink">
               Login
@@ -56,6 +39,7 @@ function Navbar() {
             </Link>
           </ListItem>
         </List>
+
         {token ? (
           <Button variant="outlined" className="logoutButton">
             Logout

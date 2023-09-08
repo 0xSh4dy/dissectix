@@ -24,7 +24,7 @@ class ChallengeTest(TestCase):
             "language":"rust",
             "code":'fn test(){println!("Hello world!");} fn main(){test();}',
             "description":"This hit that ice cold Michelle Pffefier that white gold. Uptown Funk is awesome!",
-            "name":"rustfour",
+            "name":"rusticity",
             "functions":"main|test"
         }
         headers = {

@@ -15,11 +15,6 @@ export default function LoggedInComponents() {
             </Link>
         </ListItem>
         <ListItem className='navItem'>
-            <Link to='/mychallenges' className='navLink'>
-                My Challenges
-            </Link>
-        </ListItem>
-        <ListItem className='navItem'>
             <Link to='/profile' className='navLink'>
                 Profile
             </Link>

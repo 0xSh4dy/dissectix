@@ -5,6 +5,7 @@ import {REGISTER_URL} from "../../constants";
 import { httpJsonPost } from '../../utils/httpHandler';
 import { useDispatch } from 'react-redux';
 import { setToken } from '../../slices/tokenSlice';
+import { setUser } from '../../slices/userSlice';
 
 function RegistrationForm() {
   const [userData, setUserData] = useState({ username: "", password: "", email: "" });
@@ -51,6 +52,7 @@ function RegistrationForm() {
           else{
             alert("Registration complete!");
             dispatch(setToken(response.response.token));
+            dispatch(setUser(userData.username));
             navigate("/dashboard");
           }
         }

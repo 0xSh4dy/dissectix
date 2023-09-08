@@ -67,28 +67,29 @@ def nlines(text):
     return n
 
 
-if __name__ == '__main__':
+# if __name__ == '__main__':
+def get_diffed_values(candidate,target):
     import argparse
     import yaml
     import sys
 
-    def read_yaml(path):
-        with open(path) as file:
-            return yaml.safe_load(file)
+    # def read_yaml(path):
+    #     with open(path) as file:
+    #         return yaml.safe_load(file)
 
-    parser = argparse.ArgumentParser()
-    parser.add_argument('disasm', help='path to the YAML disassembly of a candidate binary')
-    parser.add_argument('target', help='path to the YAML disassembly of the target binary')
+    # parser = argparse.ArgumentParser()
+    # parser.add_argument('disasm', help='path to the YAML disassembly of a candidate binary')
+    # parser.add_argument('target', help='path to the YAML disassembly of the target binary')
 
-    args   = parser.parse_args()
-    disasm = read_yaml(args.disasm)
-    target = read_yaml(args.target)
+    # args   = parser.parse_args()
+    # disasm = read_yaml(args.disasm)
+    # target = read_yaml(args.target)
 
-    # Force a Git-friendly output format:
-    # https://stackoverflow.com/a/8641732
+    # # Force a Git-friendly output format:
+    # # https://stackoverflow.com/a/8641732
     def strdump(dumper, data):
         return dumper.represent_scalar('tag:yaml.org,2002:str', data, style='|')
     yaml.add_representer(str, strdump)
 
-    functions, _ = diff_all(disasm, target)
-    sys.stdout.write(yaml.dump(functions))
+    functions, _ = diff_all(yaml.safe_load(candidate), yaml.safe_load(target))
+    return yaml.dump(functions)

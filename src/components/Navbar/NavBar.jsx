@@ -26,6 +26,11 @@ function Navbar() {
               About
             </Link>
           </ListItem>
+          <ListItem className="navItem">
+            <Link to="/leaderboard" className="navLink">
+              Leaderboard
+            </Link>
+          </ListItem>
         {token?<LoggedInComponents/>:null}
           
           <ListItem className="navItem" style={{ display: token ? 'none' : 'inline-block' }}>

@@ -56,3 +56,4 @@ def get_mangled_function_name(function_name,binary_path,language):
         if idx==0:
             return function
     return ''    
+

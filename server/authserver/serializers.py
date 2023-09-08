@@ -28,3 +28,13 @@ class DissectixUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = DissectixUser
         fields = ['username', 'password', 'email', 'score', 'attempted_challenges', 'created_challenges']
+
+class LeaderboardDataSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DissectixUser
+        fields = ['username','score']
+
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DissectixUser
+        fields = ["solve_count","solved_challenges","score","created_challenges"]

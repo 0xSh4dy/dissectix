@@ -37,7 +37,7 @@ class ChallengeTest(TestCase):
     def test_c_challenge_creation(self):
         chall_url = "http://127.0.0.1:8000/dissectix/challenge/"
         data = {
-            "difficulty":"easy",
+            "difficulty":"medium",
             "language":"c",
             "code":'#include<stdio.h> \n void test(){puts("Hello world");} int main(){test();return 0;}',
             "name":"cfour",

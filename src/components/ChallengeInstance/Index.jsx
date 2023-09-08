@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux"
 import { selectChallenge, setChallenge } from "../../slices/challengeSlice";
 import React, { useEffect, useState } from "react";
-import { CHALLENGE_URL, CODE_TESTING_URL } from "../../constants";
+import { CHALLENGE_URL, CODE_SUBMISSION_URL, CODE_TESTING_URL } from "../../constants";
 import { useLocation, useNavigate } from "react-router-dom";
 import { selectToken } from "../../slices/tokenSlice";
 import { Editor } from "@monaco-editor/react";
@@ -10,6 +10,7 @@ import { selectEditorTheme, setEditorTheme } from "../../slices/editorThemeSlice
 import AssemblyCode from "./AssemblyCode";
 import { selectFunction } from "../../slices/functionSlice";
 import { selectCode, setCurrentCode } from "../../slices/codeSlice";
+import { selectUser } from "../../slices/userSlice";
 
 function getCodeAndFunctions(base64Code) {
     let decodedCode = JSON.parse(atob(base64Code));
@@ -36,6 +37,9 @@ export default function ChallengeInstance() {
     const [currentOriginalFunction,setCurrentOriginalFunction] = useState([]);
     const [mangledNames, setMangledNames] = useState([]);
     const [currentCompiledFunction,setCurrentCompiledFunction] = useState([]);
+    const [percentage,setPercentage] = useState(0);
+    const username = useSelector(selectUser);
+    const [bestPercentage,setBestPercentage] = useState(0);
 
     useEffect(() => {
         let challFetchingUrl = CHALLENGE_URL + "?";
@@ -61,6 +65,10 @@ export default function ChallengeInstance() {
             setOriginalCode(returnCode.code);
             setMangledNames(returnCode.functions);
             setCurrentOriginalFunction(returnCode.functions[0]);
+            let solve_data = data.detail.solve_percentage;
+            if(solve_data[username]){
+                setBestPercentage(solve_data[username]);
+            }
         }).catch((err) => { console.log(err); return; });
 
     }, []);
@@ -102,11 +110,9 @@ export default function ChallengeInstance() {
         }
     }
 
-
     function OriginalCodeContainer(){
         return <React.Fragment>
             <FormControl>
-                <InputLabel>Functions</InputLabel>
                 <NativeSelect onChange={(e)=>{setCurrentOriginalFunction(e.target.value);}}>
                     {mangledNames.map(x=><option value={x} key={x}>{x}</option>)}
                 </NativeSelect>
@@ -121,7 +127,6 @@ export default function ChallengeInstance() {
     function CompiledCodeContainer(){
         return <React.Fragment>
             <FormControl>
-                <InputLabel>Functions</InputLabel>
                 <NativeSelect onChange={(e)=>setCurrentCompiledFunction(e.target.value)}>
                     {mangledNames.map(x=><option value={x} key={x}>{x}</option>)}
                 </NativeSelect>
@@ -129,9 +134,44 @@ export default function ChallengeInstance() {
             {userAsm[currentCompiledFunction]?<AssemblyCode code={userAsm[currentCompiledFunction].asm}/>:<CompileMeMessage/>}
         </React.Fragment>
     }
+
+    async function submitSolution(){
+        let submissionData = {
+            chall_id:challengeId,
+            code:code
+        };
+        const response = await fetch(CODE_SUBMISSION_URL,{
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json",
+                "Authorization":`Token ${token}`
+            },
+            body:JSON.stringify(submissionData)
+        });
+        if(response.status!=200){
+            alert(response.statusText);
+        }
+        else{
+            const responseData = await response.json();
+            if(responseData.error){
+                alert(responseData.detail);
+            }
+            else{
+                let perc = parseInt(responseData.detail)
+                setPercentage(perc);
+                if(perc>bestPercentage){
+                    setBestPercentage(perc)
+                }
+                setUserAsm(responseData.disasm)
+            }
+        }
+    }
+
     return <Grid container marginTop="10px" sx={{ position: "relative", bottom: "10px" }}>
         <Grid item xs={2} padding={4}>
-            <Typography variant="h4">{challName}</Typography>
+            <Typography color="blue" variant="h4">{challName}</Typography>
+            <Typography  variant="h6">Best: {bestPercentage}%</Typography>
+            <Typography marginBottom={2} variant="h6">Current: {percentage}%</Typography>
             <FormControl>
                 <InputLabel variant="standard">Theme</InputLabel>
                 <NativeSelect onChange={(e) => { dispatch(setEditorTheme(e.target.value)); }}>
@@ -139,13 +179,12 @@ export default function ChallengeInstance() {
                     <option value="light">Light</option>
                 </NativeSelect>
             </FormControl>
-            <Button onClick={checkCode} fullWidth variant="contained" sx={{ marginTop: "1rem" }}>
+            <Button onClick={()=>{checkCode();localStorage.setItem(challengeId, code);}} fullWidth variant="contained" sx={{ marginTop: "1rem" }}>
                 Compile
             </Button>
-            <Button onClick={() => {
-                localStorage.setItem(challengeId, code)
-            }} fullWidth variant="contained" sx={{ marginTop: "1rem" }}>
-                Save
+
+            <Button onClick={()=>{submitSolution();localStorage.setItem(challengeId, code);}} variant="contained" fullWidth sx={{marginTop:"1rem"}}>
+                Submit
             </Button>
         </Grid>
         <Grid item xs={5}>

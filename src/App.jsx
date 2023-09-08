@@ -17,6 +17,8 @@ import Dashboard from './components/Dashboard/Index';
 import ChallengeInstance from './components/ChallengeInstance/Index';
 import { useSelector } from 'react-redux';
 import { selectToken } from './slices/tokenSlice';
+import Leaderboard from './components/Leaderboard/Index';
+import Profile from './components/Profile/Index';
 function App() {
 
   const token = useSelector(selectToken);
@@ -30,8 +32,10 @@ function App() {
         <Route path="/createChallenge" element={token==""?<Login/>:<ChallengeForm />} />
         <Route path="/forgotPassword" element={<ForgotPassword />} />
         <Route path='/logout' element={<Logout/>}/>
+        <Route path='/leaderboard' element={<Leaderboard/>}/>
         <Route path='/dashboard' element={<Dashboard/>}/>
         <Route path='/challenge/:challengeId' element={<ChallengeInstance/>}/>
+        <Route path='/profile/:username' element={<Profile/>}/>
       </Routes>
       {/* <Footer /> */}
     </BrowserRouter>

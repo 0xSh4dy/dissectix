@@ -7,6 +7,7 @@ import challengeReducer from "../slices/challengeSlice";
 import editorThemeReducer from "../slices/editorThemeSlice";
 import functionReducer from "../slices/functionSlice";
 import codeReducer from "../slices/codeSlice";
+import userReducer from "../slices/userSlice";
 
 const persistConfig = {
     key: "root",
@@ -16,6 +17,7 @@ const persistConfig = {
 const persistedTokenReducer = persistReducer(persistConfig, tokenReducer);
 const persistedEditorThemeReducer = persistReducer(persistConfig,editorThemeReducer);
 const persistedCodeReducer = persistReducer(persistConfig,codeReducer);
+const persistedUserReducer = persistReducer(persistConfig,userReducer);
 
 const store = configureStore(
     {
@@ -24,7 +26,8 @@ const store = configureStore(
             challenge:challengeReducer,
             editorTheme:persistedEditorThemeReducer,
             function:functionReducer,
-            code:persistedCodeReducer
+            code:persistedCodeReducer,
+            user:persistedUserReducer
         },
         middleware: getDefaultMiddleware =>
             getDefaultMiddleware({

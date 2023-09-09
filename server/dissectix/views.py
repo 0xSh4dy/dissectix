@@ -183,15 +183,17 @@ class CodeSubmissionView(APIView):
                     prev_percentage = solves[username]
                 except Exception as exp:
                     prev_percentage = 0
-
+                logger.debug(solves)
+                logger.debug(f"User = {username} | Percentage = {percentage} | Prev percentage = {prev_percentage}")
                 # Author doesn't get any reward for solving his own challenge
                 if percentage>prev_percentage and username!=chall_data.author:
 
                     chall_instance = Challenge.objects.filter(chall_id=chall_id)
                     solves[username] = percentage
+                    logger.debug(f"Updating percentage for {chall_id}")
                     chall_instance.update(solve_percentage=solves)
                     user = get_object_or_404(DissectixUser,username=username)
-
+                    user.score -= points*prev_percentage//100
                     new_score = user.score + points*percentage//100
                     dissectixUserQuery = DissectixUser.objects.filter(username=username)
                     dissectixUserQuery.update(

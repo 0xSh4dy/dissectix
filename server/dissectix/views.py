@@ -79,7 +79,7 @@ class ChallengeView(APIView):
             serializer = ChallengeSerializer(data=data)
             if serializer.is_valid():
                 cloud_storage = CloudStorage()
-
+                logger.critical("Starting file upload to cloud")
                 # The name of the file to be stored in the bucket must be the challenge id
                 upload_status,url = cloud_storage.upload_file_to_cloud(file_path,data["chall_id"])
                 serializer.validated_data["file_url"] = url
@@ -92,8 +92,10 @@ class ChallengeView(APIView):
                     DissectixUser.objects.filter(username=author).update(created_challenges=created_challs)
                     return Response({"detail":"Challenge created"},status=status.HTTP_200_OK)
                 else:
+                    logger.error("Failed to upload file to cloud")
                     return Response({"detail":"Internal server error"},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
             else:
+                logger.critical(serializer.errors)
                 return Response({"detail":serializer.errors},status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             logger.critical(e)

@@ -85,10 +85,10 @@ export default function ChallengeForm() {
   });
 
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: type === "checkbox" ? checked : value,
+      [name]: value,
     });
   };
 
@@ -117,16 +117,27 @@ export default function ChallengeForm() {
   const handleFunctionChange = (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
+      const tag = e.target.value.trim();
       if (e.target.value === "") {
         window.alert("Please enter a function: ");
       } else {
         if (!tags.includes(e.target.value)) {
-          setTags((prev) => [...prev, e.target.value]);
+          setTags((prev) => [...prev, tag]);
         }
       }
       e.target.value = "";
     }
+    setFunctions(e);
   };
+  const setFunctions = (e) => {
+    const big_string =tags.join('|');
+    const result_string = big_string + "|" + s;
+    // console.log(result_string);
+    setFormData({
+      ...formData,
+      ["functions"] : result_string
+    })
+  }
 
   const renderButtons = () => {
     let counter = 0;
@@ -162,10 +173,22 @@ export default function ChallengeForm() {
             />
           </Grid>
           <Grid item xs={12}>
-            <Input fullWidth label="Code" maxRows={10} multiline />
+          <Input fullWidth label="Code" 
+                    maxRows={10} 
+                    multiline
+                    name= "code"
+                    value = {formData.code}
+                    onChange = {handleChange}
+                    />
           </Grid>
           <Grid item xs={12}>
-            <Input fullWidth label="Description" multiline maxRows={4} />
+          <Input fullWidth label="Description" 
+                    multiline 
+                    maxRows={4}
+                    name="description"
+                    value = {formData.description} 
+                    onChange ={handleChange}
+                    />
           </Grid>
           <Grid item xs={12}>
             <Input
@@ -174,7 +197,11 @@ export default function ChallengeForm() {
               maxRows={10}
               multiline
               placeholder="function"
-              onKeyDown={handleFunctionChange}
+              onKeyDown={(e) => {
+                handleFunctionChange(e);
+                // setFunctions(e);
+              }
+            }
             />
           </Grid>
 

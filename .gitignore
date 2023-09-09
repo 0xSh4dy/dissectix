@@ -34,3 +34,7 @@ media
 .vscode/*
 !.vscode/settings.json 
 .env
+
+# Production dockerfiles
+Dockerfile.prod
+docker-compose.yml

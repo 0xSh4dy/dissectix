@@ -1,0 +1,11 @@
+version: '3'
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "4173:4173"
+    environment:
+      - VITE_AUTH_URL=http://backend:4120/auth/
+      - VITE_DISSECTIX_URL=http://backend:4120/dissectix/

@@ -11,7 +11,7 @@ import Register from './components/Auth/Register.jsx';
 import ForgotPassword from "./components/Auth/ForgotPassword.jsx";
 import NavBar from "./components/Navbar/NavBar.jsx";
 import Footer from './components/Footer/Footer.jsx';
-import { Home } from '@mui/icons-material';
+import Home from './components/Home/Index';
 import Logout from "./components/Auth/Logout.jsx";
 import Dashboard from './components/Dashboard/Index';
 import ChallengeInstance from './components/ChallengeInstance/Index';

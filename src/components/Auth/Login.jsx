@@ -5,7 +5,6 @@ import { LOGIN_URL } from '../../constants';
 import { httpJsonPost } from '../../utils/httpHandler';
 import { useDispatch } from 'react-redux';
 import { setToken } from '../../slices/tokenSlice';
-import { setUser } from '../../slices/userSlice';
 
 function LoginPage() {
   const [username, setUsername] = useState('');
@@ -28,7 +27,6 @@ function LoginPage() {
       let message = response.response.detail;
       alert(message);
       dispatch(setToken(token));
-      dispatch(setUser(username));
       navigate("/dashboard");
     }
   };

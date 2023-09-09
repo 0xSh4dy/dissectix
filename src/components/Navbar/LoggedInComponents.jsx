@@ -1,8 +1,11 @@
 import { ListItem } from "@mui/material";
 import React from "react";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { selectUser } from "../../slices/userSlice";
 
 export default function LoggedInComponents() {
+    const username = useSelector(selectUser);
     return <React.Fragment>
         <ListItem className="navItem">
             <Link to="/dashboard" className="navLink">
@@ -15,7 +18,7 @@ export default function LoggedInComponents() {
             </Link>
         </ListItem>
         <ListItem className='navItem'>
-            <Link to='/profile' className='navLink'>
+            <Link to={`/profile/${username}`} className='navLink'>
                 Profile
             </Link>
         </ListItem>

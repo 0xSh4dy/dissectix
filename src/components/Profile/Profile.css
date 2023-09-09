@@ -1,0 +1,46 @@
+/* Profile container */
+.container {
+    padding-top: 20px;
+  }
+  
+  /* Profile header */
+  .profileHeader {
+    margin-bottom: 20px;
+    font-size: 2rem;
+    color: #333;
+  }
+  
+  /* Paper style */
+  .paper {
+    padding: 20px;
+    min-height: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: #f9f9f9;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    transition: transform 0.3s ease;
+    cursor: pointer;
+
+  }
+  
+  /* Header style */
+  .header {
+    margin-bottom: 10px;
+    font-size: 1.5rem;
+    color: #333;
+  }
+  
+  /* Challenge item style */
+  .challengeItem {
+    margin-bottom: 5px;
+  }
+  
+  /* Link style */
+  .challengeItem a {
+    color: #007bff;
+    text-decoration: none;
+    transition: text-decoration 0.2s ease;
+  }
+  

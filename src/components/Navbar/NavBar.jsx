@@ -22,11 +22,6 @@ function Navbar() {
             </Link>
           </ListItem>
           <ListItem className="navItem">
-            <Link to="/about" className="navLink">
-              About
-            </Link>
-          </ListItem>
-          <ListItem className="navItem">
             <Link to="/leaderboard" className="navLink">
               Leaderboard
             </Link>

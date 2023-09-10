@@ -7,7 +7,7 @@ class Challenge(models.Model):
     is_public = models.BooleanField()
     description = models.TextField(default="")
     file_url = models.TextField(default="")
-    solve_percentage = models.JSONField()
+    solve_percentage = models.JSONField(default=dict)
     points = models.IntegerField()
     difficulty = models.CharField(max_length=20)
     language = models.CharField(max_length=20)

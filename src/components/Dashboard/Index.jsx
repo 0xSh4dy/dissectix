@@ -42,8 +42,9 @@ export default function Dashboard() {
 
   const nextEnable = challenges.length > 20;
   return (
-    <div style={{ overflow: "hidden" }}>
+    <div style={{ overflow: "auto" }}>
       <Grid
+      overflow={"auto"}
         container
         spacing={3}
         justifyContent="center"

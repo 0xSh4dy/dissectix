@@ -51,9 +51,7 @@ function RegistrationForm() {
           }
           else{
             alert("Registration complete!");
-            dispatch(setToken(response.response.token));
-            dispatch(setUser(userData.username));
-            navigate("/dashboard");
+            navigate("/login");
           }
         }
     }

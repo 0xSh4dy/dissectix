@@ -55,6 +55,8 @@ class ChallengeView(APIView):
             data["author"] = author
             data["chall_id"] = generate_unique_id()
             data["is_public"] = True
+
+            logger.debug(data["functions"])
             functions = data["functions"].split("|")
             difficulty = data["difficulty"]
             if difficulty == "easy":
@@ -65,21 +67,25 @@ class ChallengeView(APIView):
                 data["points"] = HARD_LEVEL
             data["solve_percentage"] = json.dumps({author:0})
             (success,message,file_path) = get_disasm(data["language"],data["code"],data["name"],functions)
-
+            
             if success==False:
-                return Response({"detail":message},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                return Response({"detail":message,"error":"true"},status=status.HTTP_200_OK)
             
             asm_code = json.dumps(message)
+            actualFnNames = message.keys()
+            for user_fnname in functions:
+                if user_fnname not in actualFnNames:
+                    return Response({"detail":f"Error: Invalid functions","error":"true"},status=200)
             encoded_asm_code = base64.b64encode(asm_code.encode()).decode()
             file_name = file_path.split("/")[-1]
             
             # Initialize empty url to ensure that files only get uploaded to cloud when everything is alright
-            data["file_url"] = ""
+            data["file_url"] = "http://127.0.0.1"
             data["code"] = encoded_asm_code
             serializer = ChallengeSerializer(data=data)
             if serializer.is_valid():
+                logger.info("Found valid serialized object")
                 cloud_storage = CloudStorage()
-
                 # The name of the file to be stored in the bucket must be the challenge id
                 upload_status,url = cloud_storage.upload_file_to_cloud(file_path,data["chall_id"])
                 serializer.validated_data["file_url"] = url
@@ -94,6 +100,14 @@ class ChallengeView(APIView):
                 else:
                     return Response({"detail":"Internal server error"},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
             else:
+                logger.error(serializer.errors)
+                errs = ""
+                for i in serializer.errors.values():
+                    for j in i:
+                        errs = j
+                if len(errs)!=0:
+                    logger.error(errs)
+                    return Response({"detail":errs,"error":"true"},status=200)
                 return Response({"detail":serializer.errors},status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             logger.critical(e)
@@ -157,6 +171,8 @@ class CodeSubmissionView(APIView):
             submitted_code = data["code"]
             chall_data = get_object_or_404(Challenge,chall_id=chall_id)
             solves = chall_data.solve_percentage
+            if type(solves) is str:
+                solves = json.loads(solves)
             points = chall_data.points
             decoded_code = json.loads(base64.b64decode(chall_data.code.encode()).decode())
             functions = chall_data.functions.split("|")
@@ -164,6 +180,7 @@ class CodeSubmissionView(APIView):
             if stats== False:
                 return Response({"detail":user_disasm,"error":"true"},status=status.HTTP_200_OK)
             else:
+                logger.debug("Running differ")
                 decoded_disasm_yaml = yaml.dump(decoded_code)
                 original_disasm_yaml = yaml.dump(user_disasm)
                 result = get_diffed_values(decoded_disasm_yaml,original_disasm_yaml)
@@ -175,21 +192,24 @@ class CodeSubmissionView(APIView):
                     delta = result[fn_name]["delta"]
                     matching_lines += delta[1]
                     total_lines += delta[3]
-                
+                logger.debug("Calculating percentage")
                 percentage = 100*(matching_lines)//total_lines
                 try:
-                    prev_percentage = solves[username]
+                    prev_percentage = int(solves[username])
                 except Exception as exp:
                     prev_percentage = 0
 
                 # Author doesn't get any reward for solving his own challenge
                 if percentage>prev_percentage and username!=chall_data.author:
-
                     chall_instance = Challenge.objects.filter(chall_id=chall_id)
+                    logger.debug("a")
+                    print(solves)
+                    print(type(solves))
                     solves[username] = percentage
+                    logger.debug("a")
+
                     chall_instance.update(solve_percentage=solves)
                     user = get_object_or_404(DissectixUser,username=username)
-
                     new_score = user.score + points*percentage//100
                     dissectixUserQuery = DissectixUser.objects.filter(username=username)
                     dissectixUserQuery.update(

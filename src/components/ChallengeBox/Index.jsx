@@ -31,11 +31,13 @@ export default function Challenge(props) {
     <Grid item xs={12} sm={6} md={4} lg={3} padding="16px">
       <Box
         sx={{
+          overflow:"auto",
           backgroundColor: "#F5F5F5", // Light gray background
           borderRadius: "10px",
           boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
           padding: "16px",
           textAlign: "center",
+          maxHeight:"80vh",
           transition: "transform 0.2s",
           "&:hover": {
             transform: "scale(1.05)",
@@ -64,7 +66,9 @@ export default function Challenge(props) {
           >
             Start
           </Button>
-          <Button variant="contained" color="secondary">
+          <Button onClick={()=>{
+            window.location.href = props.challenge.file_url;
+          }} variant="contained" color="secondary">
             Download
           </Button>
         </Box>

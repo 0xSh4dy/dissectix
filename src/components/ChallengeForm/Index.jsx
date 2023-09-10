@@ -19,6 +19,7 @@ import { useSelector } from "react-redux";
 import { selectToken } from "../../slices/tokenSlice";
 import { CHALLENGE_URL } from "../../constants";
 import { Message } from "@mui/icons-material";
+import { Editor } from "@monaco-editor/react";
 
 const StyledContainer = styled(Container)`
   background-color: #f5f5f5;
@@ -76,16 +77,17 @@ const StyledGrid = styled.div`
 
 export default function ChallengeForm() {
   const [tags, setTags] = useState([]);
+  const [code, setCode] = useState("");
+  const token = useSelector(selectToken);
+  const [isSubmitting,setSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     difficulty: "easy",
-    description:"",
+    description: "",
     language: "c",
-    functions: "",
-    code: "",
   });
 
-  
+
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -95,23 +97,55 @@ export default function ChallengeForm() {
     });
   };
 
-  const handleSubmit = async(e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    
-   
+    let fnStr = "";
+    for (let fn of tags) {
+      fnStr += fn + "|";
+    }
+    fnStr = fnStr.substring(0, fnStr.length - 1);
+    formData.functions = fnStr;
+    formData.code = code;
 
-    console.log(formData);
-    const response = await fetch(CHALLENGE_URL,{
-      method:"POST",
-      headers:{
-        "Content-Type":"application/json"
-      }
+    if (formData.name == "") {
+      alert("Name cannot be empty");
+      return;
+    }
+    else if (formData.description == "") {
+      alert("Desciption cannot be empty");
+      return;
+    }
+    else if (formData.code == "") {
+      alert("Code cannot be empty");
+      return;
+    }
+    else if (tags.length == 0) {
+      alert("Functions cannot be empty");
+      return;
+    }
+    setSubmitting(true);
+
+    const response = await fetch(CHALLENGE_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Token ${token}`
+      },
+      body: JSON.stringify(formData)
     });
-    if(response.status!=200){
+    if (response.status != 200) {
+      setSubmitting(false);
       alert(response.statusText)
     }
-    else{
-
+    else {
+      setSubmitting(false);
+      let data = await response.json();
+      if (data.error == "true") {
+        alert(data.detail)
+      }
+      else {
+        alert("Challenge created");
+      }
     }
   };
 
@@ -151,20 +185,28 @@ export default function ChallengeForm() {
     });
   };
 
-  
 
- 
 
+
+
+  function Loading(){
+    return <div>
+      <div className="loading-overlay">
+        <div className="loading-spinner"></div>
+        <p>Loading...</p>
+      </div>
+      </div>
+  }
   return (
-    <StyledContainer maxWidth="sm"  >
-     
+  <StyledContainer maxWidth="sm"  >
+    {isSubmitting?<Loading/>:null}
       <Heading variant="h4" gutterBottom >
         Create Challenge
       </Heading>
       <form onSubmit={handleSubmit} >
-        
+
         <Grid container spacing={2}>
-          
+
           <Grid item xs={12}>
             <Input
               label="Challenge Name"
@@ -173,43 +215,12 @@ export default function ChallengeForm() {
               value={formData.name}
               onChange={handleChange}
               inputProps={{ maxLength: 40 }}
-              
+
               helperText={`${formData.name.length} / 40 characters`}
             />
-             
-            
-          </Grid>
-          <Grid item xs={12}>
-            <Input fullWidth label="Code" maxRows={10} multiline />
-          </Grid>
-          <Grid item xs={12}>
-            <Input
-             fullWidth 
-             label="Description"
-             multiline maxRows={4}
-             name="description"
-             value={formData.description}
-             onChange={handleChange}
-             inputProps={{ maxLength: 200 }}
-              helperText={`${formData.description.length} / 200 characters`}
-             />
-          </Grid>
-          <Grid item xs={12}>
-            <Input
-              fullWidth
-              label="Functions"
-              maxRows={10}
-              multiline
-              placeholder="function"
-              onKeyDown={handleFunctionChange}
-              
-            />
-              
-          </Grid>
 
-          <div className="used_division">
-            <StyledGrid>{renderButtons()}</StyledGrid>
-          </div>
+
+          </Grid>
           <Grid item xs={12}>
             <StyledFormControl>
               <InputLabel htmlFor="language">Programming Language</InputLabel>
@@ -222,10 +233,44 @@ export default function ChallengeForm() {
                 <MenuItem value="c">C</MenuItem>
                 <MenuItem value="c++">C++</MenuItem>
                 <MenuItem value="rust">Rust</MenuItem>
-                <MenuItem value="go">Go</MenuItem>
+                {/* <MenuItem value="go">Go</MenuItem> */}
               </Select>
             </StyledFormControl>
           </Grid>
+          <Grid item xs={12}>
+            {/* <Input fullWidth label="Code" maxRows={10} multiline />
+             */}
+            <p style={{ textAlign: "left" }}>Code</p>
+            <Editor onChange={(value) => { setCode(value) }} theme="light" language={formData.language != "" ? formData.language : "c"} height="40vh" style={{ overflow: "auto" }} defaultValue="// Type your code here" />
+          </Grid>
+          <Grid item xs={12}>
+            <Input
+              fullWidth
+              label="Description"
+              multiline maxRows={4}
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+              inputProps={{ maxLength: 200 }}
+              helperText={`${formData.description.length} / 200 characters`}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <Input
+              fullWidth
+              label="Functions"
+              maxRows={10}
+              multiline
+              placeholder="Type function name and press enter"
+              onKeyDown={handleFunctionChange}
+
+            />
+
+          </Grid>
+
+          <div className="used_division">
+            <StyledGrid>{renderButtons()}</StyledGrid>
+          </div>
           <Grid item xs={12}>
             <StyledFormControl>
               <InputLabel htmlFor="difficulty">Difficulty</InputLabel>
@@ -247,7 +292,7 @@ export default function ChallengeForm() {
           </Grid>
         </Grid>
       </form>
-   
+
     </StyledContainer>
   );
 }

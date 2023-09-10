@@ -66,8 +66,6 @@ export default function ChallengeInstance() {
             setMangledNames(returnCode.functions);
             setCurrentOriginalFunction(returnCode.functions[0]);
             let solve_data = data.detail.solve_percentage;
-            console.log(solve_data)
-            console.log(username)
             if(solve_data[username]){
                 setBestPercentage(solve_data[username]);
             }

@@ -11,5 +11,3 @@ python-dotenv==1.0.0
 PyYAML==6.0
 Requests==2.31.0
 django-cors-headers==4.2.0
-httplib2==0.15.0
-google-api-python-client==1.6

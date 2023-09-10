@@ -79,7 +79,7 @@ class ChallengeView(APIView):
             serializer = ChallengeSerializer(data=data)
             if serializer.is_valid():
                 cloud_storage = CloudStorage()
-                logger.critical("Starting file upload to cloud")
+
                 # The name of the file to be stored in the bucket must be the challenge id
                 upload_status,url = cloud_storage.upload_file_to_cloud(file_path,data["chall_id"])
                 serializer.validated_data["file_url"] = url
@@ -92,10 +92,8 @@ class ChallengeView(APIView):
                     DissectixUser.objects.filter(username=author).update(created_challenges=created_challs)
                     return Response({"detail":"Challenge created"},status=status.HTTP_200_OK)
                 else:
-                    logger.error("Failed to upload file to cloud")
                     return Response({"detail":"Internal server error"},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
             else:
-                logger.critical(serializer.errors)
                 return Response({"detail":serializer.errors},status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             logger.critical(e)
@@ -183,17 +181,15 @@ class CodeSubmissionView(APIView):
                     prev_percentage = solves[username]
                 except Exception as exp:
                     prev_percentage = 0
-                logger.debug(solves)
-                logger.debug(f"User = {username} | Percentage = {percentage} | Prev percentage = {prev_percentage}")
+
                 # Author doesn't get any reward for solving his own challenge
                 if percentage>prev_percentage and username!=chall_data.author:
 
                     chall_instance = Challenge.objects.filter(chall_id=chall_id)
                     solves[username] = percentage
-                    logger.debug(f"Updating percentage for {chall_id}")
                     chall_instance.update(solve_percentage=solves)
                     user = get_object_or_404(DissectixUser,username=username)
-                    user.score -= points*prev_percentage//100
+
                     new_score = user.score + points*percentage//100
                     dissectixUserQuery = DissectixUser.objects.filter(username=username)
                     dissectixUserQuery.update(

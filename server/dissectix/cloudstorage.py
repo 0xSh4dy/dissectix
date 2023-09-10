@@ -24,7 +24,6 @@ class CloudStorage:
 
     def upload_file_to_cloud(self,file_path,file_name):
         try:
-            logger.debug(f"Writing {file_path} | {file_name}")
             credentials = ServiceAccountCredentials.from_json_keyfile_dict(self.credentials_dict)
             client = storage.Client(credentials=credentials,project=self.project)
             bucket = client.get_bucket(self.bucket_name)
@@ -34,7 +33,6 @@ class CloudStorage:
             return True,blob.public_url
         
         except Exception as e:
-            logger.critical(e)
             return False,"Internal server error"
     
     def delete_file_from_bucket(self,file_name):

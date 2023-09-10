@@ -64,9 +64,7 @@ export default function Challenge(props) {
           >
             Start
           </Button>
-          <Button onClick={()=>{
-            window.location.href = props.challenge.file_url
-          }} variant="contained" color="secondary">
+          <Button variant="contained" color="secondary">
             Download
           </Button>
         </Box>

@@ -1,7 +1,8 @@
 /* Leaderboard.css */
 
 .leaderboard-container {
-    max-width: 800px;
+    
+    width: 100vh;
     margin: 0 auto;
     padding: 20px;
     background-color: #f5f5f5;
@@ -13,6 +14,7 @@
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
+    
     background-color: #ffffff;
     border-radius: 10px;
     overflow: hidden;
@@ -47,7 +49,7 @@ h2 {
 }
 
 /* Highlight the top 3 rows */
-.leaderboard-table tbody tr:nth-child(-n+2) {
+.leaderboard-table tbody tr:nth-child(-n+3) {
     background-color: #e67e22; /* Orange */
     color: #ffffff;
     font-weight: bold;
@@ -56,3 +58,4 @@ h2 {
 .hoverptr:hover{
     cursor: pointer;
 }
+

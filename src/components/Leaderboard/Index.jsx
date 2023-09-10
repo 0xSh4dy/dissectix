@@ -23,6 +23,7 @@ export default function Leaderboard() {
             <table className="leaderboard-table">
                 <thead>
                     <tr>
+                    
                         <th>Rank</th>
                         <th>Username</th>
                         <th>Score</th>
@@ -31,7 +32,15 @@ export default function Leaderboard() {
                 <tbody>
                     {userScoreData.map((user, index) => (
                         <tr key={index} className={index % 2 === 0 ? 'even-row' : 'odd-row'}>
-                            <td>{index + 1}</td>
+                            <td>
+                               {index === 0 ? (
+                                <div>
+                                  1 <i class="fa-solid fa-crown"></i>
+                                </div>
+                               ) : (
+                               index + 1
+                              )}
+                            </td>
                             <td className="hoverptr" onClick={(e)=>{
                                 navigate(`/profile/${user.username}`);
                             }}>

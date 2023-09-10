@@ -6,3 +6,5 @@ services:
       dockerfile: Dockerfile
     ports:
       - "4050:8000"
+    volumes:
+      - /home/dissectixdb:/server/db.sqlite3

@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import ChallengeForm from "../ChallengeForm/Index";
 import { CHALLENGE_URL } from "../../constants";
 import Challenge from "../ChallengeBox/Index";
-import { Box, Button, Grid, Select, Typography } from "@mui/material";
+import { Box, Button, Grid, Hidden, Select, Typography } from "@mui/material";
 
 export default function Dashboard() {
   const token = useSelector(selectToken);
@@ -37,11 +37,12 @@ export default function Dashboard() {
     }
   }, [start]);
 
-  const nextText = "Next >>";
-  const prevText = "<< Previous";
+  const nextText = ">>"; //Next >>
+  const prevText = "<< "; // << Previous
 
+  const nextEnable = challenges.length > 20;
   return (
-    <div>
+    <div style={{ overflow: "hidden" }}>
       <Grid
         container
         spacing={3}
@@ -49,6 +50,7 @@ export default function Dashboard() {
         alignItems="stretch"
         marginTop="2px"
         marginLeft="2px"
+        
       >
         {challenges.map((challenge) => (
           <Challenge key={challenge.id} challenge={challenge} />
@@ -69,7 +71,7 @@ export default function Dashboard() {
             }
           }}
           variant="contained"
-          style={{ width: "13%", marginRight: "1rem" }}
+          style={{ width: "1%", marginRight: "1rem" }}
         >
           {prevText}
         </Button>
@@ -77,19 +79,21 @@ export default function Dashboard() {
           margin="1rem"
           display="inline"
           color="textSecondary"
-          variant="h4"
+          variant="h6"
         >
           Page {start / 20 + 1}
         </Typography>
-        <Button
-          onClick={() => {
-            setStart(start + 20);
-          }}
-          variant="contained"
-          style={{ width: "13%", marginLeft: "1rem" }}
-        >
-          {nextText}
-        </Button>
+        {/* {nextEnable && ( */}
+          <Button
+            onClick={() => {
+              setStart(start + 20);
+            }}
+            variant="contained"
+            style={{ width: "1%", marginLeft: "1rem" }}
+          >
+            {nextText}
+          </Button>
+        {/* )} */}
       </Box>
     </div>
   );

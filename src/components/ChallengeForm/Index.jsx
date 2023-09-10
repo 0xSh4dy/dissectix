@@ -18,6 +18,7 @@ import {
 import { useSelector } from "react-redux";
 import { selectToken } from "../../slices/tokenSlice";
 import { CHALLENGE_URL } from "../../constants";
+import { Message } from "@mui/icons-material";
 
 const StyledContainer = styled(Container)`
   background-color: #f5f5f5;
@@ -84,16 +85,21 @@ export default function ChallengeForm() {
     code: "",
   });
 
+  
+
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type, checked } = e.target;
     setFormData({
       ...formData,
-      [name]: value,
+      [name]: type === "checkbox" ? checked : value,
     });
   };
 
   const handleSubmit = async(e) => {
     e.preventDefault();
+    
+   
+
     console.log(formData);
     const response = await fetch(CHALLENGE_URL,{
       method:"POST",
@@ -117,27 +123,16 @@ export default function ChallengeForm() {
   const handleFunctionChange = (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
-      const tag = e.target.value.trim();
       if (e.target.value === "") {
         window.alert("Please enter a function: ");
       } else {
         if (!tags.includes(e.target.value)) {
-          setTags((prev) => [...prev, tag]);
+          setTags((prev) => [...prev, e.target.value]);
         }
       }
       e.target.value = "";
     }
-    setFunctions(e);
   };
-  const setFunctions = (e) => {
-    const big_string =tags.join('|');
-    const result_string = big_string + "|" + s;
-    // console.log(result_string);
-    setFormData({
-      ...formData,
-      ["functions"] : result_string
-    })
-  }
 
   const renderButtons = () => {
     let counter = 0;
@@ -156,13 +151,20 @@ export default function ChallengeForm() {
     });
   };
 
+  
+
+ 
+
   return (
-    <StyledContainer maxWidth="sm">
-      <Heading variant="h4" gutterBottom>
+    <StyledContainer maxWidth="sm"  >
+     
+      <Heading variant="h4" gutterBottom >
         Create Challenge
       </Heading>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} >
+        
         <Grid container spacing={2}>
+          
           <Grid item xs={12}>
             <Input
               label="Challenge Name"
@@ -170,25 +172,27 @@ export default function ChallengeForm() {
               name="name"
               value={formData.name}
               onChange={handleChange}
+              inputProps={{ maxLength: 40 }}
+              
+              helperText={`${formData.name.length} / 40 characters`}
             />
+             
+            
           </Grid>
           <Grid item xs={12}>
-          <Input fullWidth label="Code" 
-                    maxRows={10} 
-                    multiline
-                    name= "code"
-                    value = {formData.code}
-                    onChange = {handleChange}
-                    />
+            <Input fullWidth label="Code" maxRows={10} multiline />
           </Grid>
           <Grid item xs={12}>
-          <Input fullWidth label="Description" 
-                    multiline 
-                    maxRows={4}
-                    name="description"
-                    value = {formData.description} 
-                    onChange ={handleChange}
-                    />
+            <Input
+             fullWidth 
+             label="Description"
+             multiline maxRows={4}
+             name="description"
+             value={formData.description}
+             onChange={handleChange}
+             inputProps={{ maxLength: 200 }}
+              helperText={`${formData.description.length} / 200 characters`}
+             />
           </Grid>
           <Grid item xs={12}>
             <Input
@@ -197,12 +201,10 @@ export default function ChallengeForm() {
               maxRows={10}
               multiline
               placeholder="function"
-              onKeyDown={(e) => {
-                handleFunctionChange(e);
-                // setFunctions(e);
-              }
-            }
+              onKeyDown={handleFunctionChange}
+              
             />
+              
           </Grid>
 
           <div className="used_division">
@@ -240,12 +242,12 @@ export default function ChallengeForm() {
             </StyledFormControl>
           </Grid>
           <Grid item xs={12}>
-            <Button type="submit" variant="contained" color="primary">
-              Submit
+            <Button type="submit" variant="contained" color="primary" > Submit
             </Button>
           </Grid>
         </Grid>
       </form>
+   
     </StyledContainer>
   );
 }

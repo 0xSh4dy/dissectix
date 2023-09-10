@@ -24,7 +24,8 @@ function App() {
   const token = useSelector(selectToken);
   return (
     <BrowserRouter>
-      <NavBar />
+    <div className="main">
+    <NavBar />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={token==""?<Login />:<Dashboard/>} />
@@ -37,7 +38,9 @@ function App() {
         <Route path='/challenge/:challengeId' element={<ChallengeInstance/>}/>
         <Route path='/profile/:username' element={<Profile/>}/>
       </Routes>
-      {/* <Footer /> */}
+      <Footer /> 
+    </div>
+      
     </BrowserRouter>
 
   );

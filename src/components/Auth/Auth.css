@@ -5,10 +5,13 @@
   align-items: center;
   height: 100vh;
   
+  background-color: #9db3c3;
+ 
+  
 }
 
 .login-form {
-  border: 1px solid #090909;
+  border: 1px solid #5e5f77;
   padding: 20px;
   border-radius: 5px;
   box-shadow: 0px 0px 5px rgba(33, 57, 94, 0.2);
@@ -18,7 +21,7 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: rgb(165, 166, 168);
+  background-color: #ffffff;
    
 }
 
@@ -42,12 +45,12 @@
 .input-container input {
   width: 100%;
   padding: 8px;
-  border: 1px solid #010101;
+  border: 1px solid #8080cc;
   border-radius: 3px;
 }
 
 button {
-  background-color: #444647;
+  background-color: #1127d3;
   color: white;
   border: none;
   border-radius: 3px;
@@ -57,7 +60,8 @@ button {
   margin: 4px 4px;
 }
 button a:hover{
-  border: 2px solid aliceblue;
+  border: 2px solid #767b9f;
+  background-color: #34353d;
 }
 
 .register-container {
@@ -65,7 +69,8 @@ button a:hover{
   justify-content: center;
   align-items: center;
   height: 100vh;
- 
+  background-color: #9db3c3;
+  
 }
 
 .register-form {
@@ -79,7 +84,7 @@ button a:hover{
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: rgb(165, 166, 168);
+    background-color: #ffffff;
   }
   
 
@@ -90,7 +95,8 @@ button a:hover{
 
 
 button[type="register"][disabled] {
-  background-color: #171a1e; 
+  background-color:  #2136d5; 
+  /* background-color: #171a1e;  */
   color: #999; 
   cursor: not-allowed;
 }
@@ -102,6 +108,7 @@ button[type="register"][disabled] {
   justify-content: center;
   align-items: center;
   height: 100vh;
+  background-color: #9db3c3;
  
 }
 
@@ -126,7 +133,7 @@ button[type="register"][disabled] {
     left: 50%;
     transform: translate(-50%, -50%);
     transition: all 0.3s ease;
-    background-color: rgb(165, 166, 168);
+    background-color: #ffffff;
   }
 
 .center-container h1 {
